@@ -2,7 +2,7 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: #F8F9FA;
+    background: #F0F0F0;
     color: #333;
     text-align: center;
 }
@@ -53,6 +53,7 @@ nav ul li a:hover {
 #hero h2 {
     font-size: 2.5em;
     margin-bottom: 10px;
+    color: #002776;
 }
 
 .btn {
@@ -85,7 +86,7 @@ nav ul li a:hover {
 #login h2 {
     font-size: 1.8em;
     margin-bottom: 15px;
-    color: #002776;
+    color: #009739;
 }
 
 .form-group {
@@ -103,8 +104,8 @@ input {
 }
 
 button {
-    background: #009739;
-    color: white;
+    background: #FFCC29;
+    color: #002776;
     font-size: 1em;
     padding: 12px;
     border: none;
@@ -115,12 +116,12 @@ button {
 }
 
 button:hover {
-    background: #007d31;
+    background: #E6B800;
 }
 
 footer {
     margin-top: 50px;
     padding: 20px;
-    background: #002776;
+    background: #009739;
     color: white;
 }
