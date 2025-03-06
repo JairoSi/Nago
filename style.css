@@ -41,7 +41,7 @@ nav ul li a:hover {
 
 #hero {
     background: url('https://source.unsplash.com/1600x900/?capoeira') center/cover;
-    color: white;
+    color: #FFCC29;
     padding: 100px 20px;
     display: flex;
     flex-direction: column;
@@ -53,7 +53,7 @@ nav ul li a:hover {
 #hero h2 {
     font-size: 2.5em;
     margin-bottom: 10px;
-    color: #002776;
+    color: #FFCC29;
 }
 
 .btn {
@@ -86,7 +86,7 @@ nav ul li a:hover {
 #login h2 {
     font-size: 1.8em;
     margin-bottom: 15px;
-    color: #009739;
+    color: white;
 }
 
 .form-group {
