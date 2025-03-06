@@ -1,74 +1,103 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
+    background: #F8F9FA;
+    color: #333;
     text-align: center;
-    background: #f0f0f0;
 }
 
 header {
-    background: #009739; /* Verde da bandeira do Brasil */
+    background: linear-gradient(90deg, #009739, #FFCC29);
     color: white;
-    padding: 15px;
+    padding: 20px 0;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 nav ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 nav ul li {
     display: inline;
-    margin: 0 15px;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+    font-size: 1.2em;
+    transition: opacity 0.3s;
+}
+
+nav ul li a:hover {
+    opacity: 0.7;
 }
 
 #hero {
-    background: #FFCC29; /* Amarelo da bandeira */
-    padding: 50px;
+    background: url('https://source.unsplash.com/1600x900/?capoeira') center/cover;
+    color: white;
+    padding: 100px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 #hero h2 {
-    color: #002776; /* Azul da bandeira */
+    font-size: 2.5em;
+    margin-bottom: 10px;
 }
 
 .btn {
     display: inline-block;
-    background: #002776; /* Azul da bandeira */
+    background: #002776;
     color: white;
-    padding: 10px 20px;
+    padding: 15px 30px;
     text-decoration: none;
     font-weight: bold;
-    border-radius: 5px;
-    margin-top: 10px;
+    border-radius: 30px;
+    margin-top: 20px;
+    transition: transform 0.3s;
 }
 
 .btn:hover {
     background: #001f5b;
+    transform: scale(1.1);
 }
 
 #login {
-    margin-top: 30px;
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 input, button {
     display: block;
     margin: 10px auto;
-    padding: 10px;
-    width: 80%;
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ddd;
 }
 
 button {
     background: #009739;
     color: white;
+    font-size: 1.2em;
     border: none;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
 button:hover {
@@ -76,7 +105,8 @@ button:hover {
 }
 
 footer {
-    margin-top: 20px;
-    padding: 10px;
-    background: #ddd;
+    margin-top: 50px;
+    padding: 20px;
+    background: #002776;
+    color: white;
 }
