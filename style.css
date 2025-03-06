@@ -3,12 +3,14 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
+    background: #f0f0f0;
 }
 
 header {
-    background: #333;
+    background: #009739; /* Verde da bandeira do Brasil */
     color: white;
     padding: 15px;
+    text-align: center;
 }
 
 nav ul {
@@ -24,10 +26,35 @@ nav ul li {
 nav ul li a {
     color: white;
     text-decoration: none;
+    font-weight: bold;
+}
+
+#hero {
+    background: #FFCC29; /* Amarelo da bandeira */
+    padding: 50px;
+}
+
+#hero h2 {
+    color: #002776; /* Azul da bandeira */
+}
+
+.btn {
+    display: inline-block;
+    background: #002776; /* Azul da bandeira */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #001f5b;
 }
 
 #login {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 input, button {
@@ -38,24 +65,18 @@ input, button {
 }
 
 button {
-    background: #28a745;
+    background: #009739;
     color: white;
     border: none;
     cursor: pointer;
 }
 
 button:hover {
-    background: #218838;
+    background: #007d31;
 }
 
 footer {
     margin-top: 20px;
     padding: 10px;
     background: #ddd;
-}
-
-@media (min-width: 768px) {
-    input, button {
-        width: 50%;
-    }
 }
