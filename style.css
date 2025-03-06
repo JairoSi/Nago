@@ -77,27 +77,41 @@ nav ul li a:hover {
     padding: 30px;
     background: white;
     width: 90%;
-    max-width: 400px;
-    border-radius: 15px;
+    max-width: 350px;
+    border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-input, button {
-    display: block;
-    margin: 10px auto;
-    padding: 15px;
+#login h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: #002776;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input {
+    padding: 12px;
     width: 100%;
-    border-radius: 10px;
-    border: 1px solid #ddd;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
 }
 
 button {
     background: #009739;
     color: white;
-    font-size: 1.2em;
+    font-size: 1em;
+    padding: 12px;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
+    width: 100%;
 }
 
 button:hover {
