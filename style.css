@@ -1,41 +1,127 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nago Capoeira Campina Grande</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Nago Capoeira Campina Grande</h1>
-        <nav>
-            <ul>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#galeria">Galeria</a></li>
-                <li><a href="#login">Login</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <section id="hero">
-        <h2>Bem-vindo ao Nago Capoeira Campina Grande</h2>
-        <p>Tradição, cultura e movimento para todas as idades.</p>
-        <a href="#login" class="btn">Acesse a Área do Aluno</a>
-    </section>
-    
-    <section id="login">
-        <h2>Área do Aluno</h2>
-        <form>
-            <input type="email" placeholder="Digite seu e-mail" required>
-            <input type="password" placeholder="Digite sua senha" required>
-            <button type="submit">Entrar</button>
-        </form>
-    </section>
-    
-    <footer>
-        <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
-    </footer>
-</body>
-</html>
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #F0F0F0;
+    color: #333;
+    text-align: center;
+}
+
+header {
+    background: linear-gradient(90deg, #009739, #FFCC29);
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: opacity 0.3s;
+}
+
+nav ul li a:hover {
+    opacity: 0.7;
+}
+
+#hero {
+    background: url('https://source.unsplash.com/1600x900/?capoeira') center/cover;
+    color: #FFCC29;
+    padding: 100px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#hero h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #FFCC29;
+}
+
+.btn {
+    display: inline-block;
+    background: #002776;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    margin-top: 20px;
+    transition: transform 0.3s;
+}
+
+.btn:hover {
+    background: #001f5b;
+    transform: scale(1.1);
+}
+
+#login {
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#login h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input {
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+
+button {
+    background: #FFCC29;
+    color: #002776;
+    font-size: 1em;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+}
+
+button:hover {
+    background: #E6B800;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 20px;
+    background: #009739;
+    color: white;
+}
