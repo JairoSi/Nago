@@ -13,6 +13,7 @@
             <ul>
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#cadastro">Cadastro</a></li>
                 <li><a href="#login">Login</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
@@ -25,11 +26,21 @@
         <a href="#login" class="btn">Acesse a Área do Aluno</a>
     </section>
     
+    <section id="cadastro">
+        <h2>Cadastro de Usuário</h2>
+        <form id="cadastro-form">
+            <input type="text" id="nome" placeholder="Digite seu nome" required>
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            <input type="password" id="senha" placeholder="Digite sua senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </section>
+    
     <section id="login">
         <h2>Área do Aluno</h2>
-        <form>
-            <input type="email" placeholder="Digite seu e-mail" required>
-            <input type="password" placeholder="Digite sua senha" required>
+        <form id="login-form">
+            <input type="email" id="email-login" placeholder="Digite seu e-mail" required>
+            <input type="password" id="senha-login" placeholder="Digite sua senha" required>
             <button type="submit">Entrar</button>
         </form>
     </section>
@@ -37,5 +48,81 @@
     <footer>
         <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
     </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import bcrypt from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/+esm";
+    
+        const firebaseConfig = {
+            apiKey: "SUA-API-KEY",
+            authDomain: "nagocapoeira-6cae5.firebaseapp.com",
+            projectId: "nagocapoeira-6cae5",
+            storageBucket: "nagocapoeira-6cae5.appspot.com",
+            messagingSenderId: "14626642245",
+            appId: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    
+        async function hashSenha(senha) {
+            const salt = await bcrypt.genSalt(10);
+            return await bcrypt.hash(senha, salt);
+        }
+    
+        async function cadastrarUsuario(nome, email, senha) {
+            try {
+                const senhaCriptografada = await hashSenha(senha);
+                await addDoc(collection(db, "usuarios"), {
+                    nome: nome,
+                    email: email,
+                    senha_hash: senhaCriptografada
+                });
+                alert("Usuário cadastrado com sucesso!");
+            } catch (error) {
+                alert("Erro ao cadastrar usuário: " + error.message);
+            }
+        }
+    
+        document.getElementById("cadastro-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+            cadastrarUsuario(nome, email, senha);
+        });
+    
+        async function login(email, senhaDigitada) {
+            try {
+                const q = query(collection(db, "usuarios"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+    
+                if (querySnapshot.empty) {
+                    alert("Usuário não encontrado.");
+                    return;
+                }
+    
+                const userData = querySnapshot.docs[0].data();
+                const senhaCorreta = await bcrypt.compare(senhaDigitada, userData.senha_hash);
+    
+                if (senhaCorreta) {
+                    alert("Login bem-sucedido!");
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Senha incorreta.");
+                }
+            } catch (error) {
+                alert("Erro ao fazer login: " + error.message);
+            }
+        }
+    
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const email = document.getElementById("email-login").value;
+            const senha = document.getElementById("senha-login").value;
+            login(email, senha);
+        });
+    </script>
 </body>
 </html>
