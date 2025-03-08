@@ -1,3 +1,31 @@
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(() => {
+        const usuarioLogado = localStorage.getItem("usuarioLogado");
+
+        if (!usuarioLogado || usuarioLogado === "null") {
+            alert("Acesso negado! Para acessar esta área, você precisa estar autenticado.");
+            window.location.href = "index.html"; 
+            return; // 🔹 Interrompe a execução do código
+        }
+
+        const userData = JSON.parse(usuarioLogado);
+
+        // 🔹 Garantindo que os elementos existem antes de acessá-los
+        const nomeUsuarioElement = document.getElementById("user-nome");
+        const emailUsuarioElement = document.getElementById("user-email");
+
+        if (nomeUsuarioElement && emailUsuarioElement) {
+            nomeUsuarioElement.textContent = userData.nome;
+            emailUsuarioElement.textContent = userData.email;
+        }
+
+        console.log("Usuário autenticado com sucesso:", userData); // 🔹 Confirmação no console
+    }, 500); // 🔹 Pequeno atraso para garantir que os elementos carreguem
+});
+
+
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";

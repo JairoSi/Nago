@@ -111,12 +111,23 @@
             return;
         }
 
-        const userData = querySnapshot.docs[0].data();
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+
         const senhaCorreta = await bcrypt.compare(senhaDigitada, userData.senha_hash);
 
         if (senhaCorreta) {
             alert("Login bem-sucedido!");
-            window.location.href = "dashboard.html"; // 🔹 Redirecionando para dashboard
+
+            // 🔹 Salvando apenas nome e email no localStorage
+            localStorage.setItem("usuarioLogado", JSON.stringify({ 
+                nome: userData.nome, 
+                email: userData.email 
+            }));
+
+            console.log("Usuário salvo no localStorage:", localStorage.getItem("usuarioLogado"));
+
+            window.location.href = "dashboard.html"; // 🔹 Redireciona para o painel
         } else {
             alert("Senha incorreta.");
         }
@@ -124,6 +135,8 @@
         alert("Erro ao fazer login: " + error.message);
     }
 }
+
+
 
 
         document.getElementById("login-form").addEventListener("submit", function(event) {
