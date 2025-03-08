@@ -1,4 +1,4 @@
-/* 🔹 Configuração Geral */
+/* ===================== 🔹 CONFIGURAÇÃO GERAL 🔹 ===================== */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -224,7 +224,8 @@ footer {
 #registrar-treino:hover {
     background: #005922;
 }
-/* ===================== 🔹 CALENDÁRIO DE PAGAMENTOS E EVENTOS 🔹 ===================== */
+
+/* ===================== 🔹 CALENDÁRIO ESTILIZADO 🔹 ===================== */
 #calendario {
     background: #FFF;
     padding: 20px;
@@ -266,10 +267,6 @@ footer {
     cursor: pointer;
 }
 
-#prev-month:hover, #next-month:hover {
-    background: #005922;
-}
-
 #calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -289,50 +286,4 @@ footer {
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-}
-
-.calendar-day.pagamento {
-    background: #FFCC29;
-}
-
-.calendar-day.treino {
-    background: #007A33;
-    color: white;
-}
-
-.calendar-day.evento {
-    background: #E60000;
-    color: white;
-}
-
-/* 🔹 Legenda do calendário */
-.legenda {
-    margin-top: 10px;
-    text-align: left;
-}
-
-.legenda p {
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-}
-
-.dot {
-    width: 15px;
-    height: 15px;
-    display: inline-block;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-.dot.pagamento {
-    background: #FFCC29;
-}
-
-.dot.treino {
-    background: #007A33;
-}
-
-.dot.evento {
-    background: #E60000;
 }
