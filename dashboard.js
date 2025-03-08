@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "SUA-API-KEY",
+    apiKey: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk",
     authDomain: "nagocapoeira-6cae5.firebaseapp.com",
     projectId: "nagocapoeira-6cae5",
     storageBucket: "nagocapoeira-6cae5.appspot.com",
@@ -15,13 +15,15 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// 🔹 Monitorar login do usuário
+// 🔹 Verificar se o usuário está autenticado
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
+        alert("Acesso negado! Para acessar esta área, você precisa estar autenticado. Caso tenha problemas, entre em contato com o suporte pelo e-mail: suporte@nagocapoeira.com.");
         window.location.href = "index.html";
         return;
     }
 
+    console.log("Usuário autenticado:", user.email);
     document.getElementById("user-email").innerText = user.email;
 
     const q = query(collection(db, "usuarios"), where("email", "==", user.email));
@@ -55,6 +57,11 @@ document.getElementById("editar-perfil").addEventListener("click", async () => {
         await updateDoc(usuarioRef, {
             nome: novoNome || querySnapshot.docs[0].data().nome,
             foto: novaFoto || querySnapshot.docs[0].data().foto
+        });
+
+        await updateProfile(user, {
+            displayName: novoNome || user.displayName,
+            photoURL: novaFoto || user.photoURL
         });
 
         alert("Perfil atualizado com sucesso!");
