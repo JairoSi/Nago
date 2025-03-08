@@ -14,7 +14,7 @@
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#galeria">Galeria</a></li>
                 <li><a href="#cadastro">Cadastro</a></li>
-                <li><a href="#login">Login</a></li>
+                <li><a href="#" id="abrir-login">Login</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
         </nav>
@@ -23,7 +23,7 @@
     <section id="hero">
         <h2>Bem-vindo ao Nago Capoeira Campina Grande</h2>
         <p>Tradição, cultura e movimento para todas as idades.</p>
-        <a href="#login" class="btn">Acesse a Área do Aluno</a>
+        <a href="#" id="abrir-login" class="btn">Acesse a Área do Aluno</a>
     </section>
     
     <section id="cadastro">
@@ -60,7 +60,7 @@
             projectId: "nagocapoeira-6cae5",
             storageBucket: "nagocapoeira-6cae5.appspot.com",
             messagingSenderId: "14626642245",
-            appId: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk"
+            appId: "SUA-APP-ID"
         };
     
         const app = initializeApp(firebaseConfig);
@@ -123,6 +123,15 @@
             const senha = document.getElementById("senha-login").value;
             login(email, senha);
         });
+
+        // Função para exibir o login ao clicar no botão
+        document.querySelectorAll("#abrir-login").forEach(btn => {
+            btn.addEventListener("click", function(event) {
+                event.preventDefault();
+                document.getElementById("login").style.display = "block";
+            });
+        });
+
     </script>
 </body>
 </html>
