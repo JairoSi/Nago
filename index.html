@@ -119,10 +119,10 @@
         if (senhaCorreta) {
             alert("Login bem-sucedido!");
 
-            // 🔹 Salvando apenas nome e email no localStorage
-            localStorage.setItem("usuarioLogado", JSON.stringify({ 
-                nome: userData.nome, 
-                email: userData.email 
+            // 🔹 Certificando-se de que não há redeclaração da variável
+            localStorage.setItem("usuarioLogado", JSON.stringify({
+                nome: userData.nome,
+                email: userData.email
             }));
 
             console.log("Usuário salvo no localStorage:", localStorage.getItem("usuarioLogado"));
@@ -132,9 +132,11 @@
             alert("Senha incorreta.");
         }
     } catch (error) {
+        console.error("Erro ao fazer login:", error);
         alert("Erro ao fazer login: " + error.message);
     }
 }
+
 
 
 
