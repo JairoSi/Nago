@@ -26,27 +26,77 @@
         <p><strong>Email:</strong> <span id="user-email"></span></p>
         <button id="editar-perfil">Editar Perfil</button>
     </section>
-    
+
     <section id="pagamentos">
         <h2>Pagamentos</h2>
-        <ul id="pagamentos-list">
-            <li>Carregando pagamentos...</li>
-        </ul>
-        <button id="pagar-mensalidade">Pagar Mensalidade</button>
+        <table id="tabela-pagamentos">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">Carregando pagamentos...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Registrar Pagamento</h3>
+        <form id="form-pagamento">
+            <input type="number" id="valor-pagamento" placeholder="Valor (R$)" required>
+            <select id="tipo-pagamento">
+                <option value="mensalidade">Mensalidade</option>
+                <option value="doacao">Doação</option>
+                <option value="premiacao">Premiação</option>
+            </select>
+            <button type="submit">Registrar Pagamento</button>
+        </form>
     </section>
 
     <section id="treinos">
-        <h2>Próximos Treinos</h2>
-        <ul id="treinos-list">
-            <li>Carregando treinos...</li>
-        </ul>
-        <button id="confirmar-presenca">Confirmar Presença</button>
+        <h2>Controle de Treinos</h2>
+
+        <!-- 🔹 Exibir total de treinos no mês -->
+        <div class="treino-info">
+            <p><strong>Total de treinos este mês:</strong> <span id="total-treinos">0</span></p>
+        </div>
+
+        <!-- 🔹 Botão para registrar um treino -->
+        <button id="registrar-treino">Registrar Treino Hoje</button>
+
+        <!-- 🔹 Lista de treinos realizados -->
+        <div class="treino-lista-container">
+            <h3>Treinos Realizados</h3>
+            <ul id="treinos-list">
+                <li>Ainda não há treinos registrados.</li>
+            </ul>
+        </div>
     </section>
+<section id="calendario">
+    <h2>Calendário de Pagamentos e Eventos</h2>
+    <div id="calendar-container">
+        <div id="calendar-header">
+            <button id="prev-month">◀</button>
+            <h3 id="month-year">Carregando...</h3>
+            <button id="next-month">▶</button>
+        </div>
+        <div id="calendar-grid"></div>
+    </div>
+
+    <div class="legenda">
+        <p><span class="dot pagamento"></span> Pagamento Realizado</p>
+        <p><span class="dot treino"></span> Treino Registrado</p>
+        <p><span class="dot evento"></span> Evento</p>
+    </div>
+</section>
 
     <footer>
         <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
     </footer>
-    
+
     <script type="module" src="dashboard.js"></script>
 </body>
 </html>

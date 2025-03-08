@@ -1,3 +1,4 @@
+/* 🔹 Configuração Geral */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -45,7 +46,7 @@ section {
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -53,6 +54,7 @@ h2 {
     color: #007A33;
 }
 
+/* 🔹 Estilizando o Perfil do Usuário */
 #perfil img {
     width: 100px;
     height: 100px;
@@ -77,6 +79,7 @@ button:hover {
     background: #E6B800;
 }
 
+/* 🔹 Estilização Geral das Listas */
 ul {
     list-style: none;
     padding: 0;
@@ -89,6 +92,7 @@ ul li {
     border-radius: 5px;
 }
 
+/* 🔹 Estilização do Rodapé */
 footer {
     margin-top: 50px;
     padding: 20px;
@@ -111,4 +115,224 @@ footer {
 /* 🔹 Cadastro e Login Inicialmente Ocultos */
 #cadastro, #login {
     display: none;
+}
+
+/* ===================== 🔹 PAGAMENTOS 🔹 ===================== */
+#pagamentos {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+#tabela-pagamentos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#tabela-pagamentos th, #tabela-pagamentos td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#tabela-pagamentos th {
+    background: #007A33;
+    color: white;
+}
+
+#tabela-pagamentos td {
+    background: #f8f8f8;
+}
+
+#form-pagamento {
+    margin-top: 15px;
+}
+
+#form-pagamento input, #form-pagamento select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* ===================== 🔹 CONTROLE DE TREINOS 🔹 ===================== */
+#treinos {
+    background: #FFF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+/* 🔹 Cartão para exibir o total de treinos */
+.treino-info {
+    background: #FFCC29;
+    color: #002776;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* 🔹 Caixa para exibir a lista de treinos */
+.treino-lista-container {
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+}
+
+/* 🔹 Lista de treinos */
+#treinos-list {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+}
+
+#treinos-list li {
+    background: #e6e6e6;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+/* 🔹 Melhorando o botão de registrar treino */
+#registrar-treino {
+    background: #007A33;
+    color: white;
+    font-size: 1.1em;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#registrar-treino:hover {
+    background: #005922;
+}
+/* ===================== 🔹 CALENDÁRIO DE PAGAMENTOS E EVENTOS 🔹 ===================== */
+#calendario {
+    background: #FFF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
+}
+
+#calendar-header h3 {
+    margin: 0;
+    font-size: 1.4em;
+}
+
+#prev-month, #next-month {
+    background: #007A33;
+    color: white;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#prev-month:hover, #next-month:hover {
+    background: #005922;
+}
+
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 10px;
+}
+
+.calendar-day {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.calendar-day.pagamento {
+    background: #FFCC29;
+}
+
+.calendar-day.treino {
+    background: #007A33;
+    color: white;
+}
+
+.calendar-day.evento {
+    background: #E60000;
+    color: white;
+}
+
+/* 🔹 Legenda do calendário */
+.legenda {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.legenda p {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.dot {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.dot.pagamento {
+    background: #FFCC29;
+}
+
+.dot.treino {
+    background: #007A33;
+}
+
+.dot.evento {
+    background: #E60000;
 }
