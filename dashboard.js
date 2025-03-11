@@ -1,6 +1,8 @@
+// Aguarda o carregamento completo do DOM antes de executar o script
 document.addEventListener("DOMContentLoaded", function () {
     console.log("🚀 Iniciando o Dashboard...");
 
+    // 🔹 Verifica se há um usuário autenticado no localStorage
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuarioLogado) {
@@ -10,6 +12,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     console.log("✅ Usuário autenticado:", usuarioLogado);
+
+    // Exibe o nome e e-mail do usuário no dashboard
+    document.getElementById("user-nome").textContent = usuarioLogado.nome;
+    document.getElementById("user-email").textContent = usuarioLogado.email;
+
+    // ===================== 🔹 LOGOUT 🔹 =====================
+    document.getElementById("logout").addEventListener("click", function () {
+        localStorage.removeItem("usuarioLogado");
+        alert("Você saiu com sucesso!");
+        window.location.href = "index.html";
+    });
 
     // ===================== 🔹 PAGAMENTOS 🔹 =====================
     function carregarPagamentos() {
@@ -37,31 +50,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("form-pagamento").addEventListener("submit", function (event) {
         event.preventDefault();
-    
+
         const valor = parseFloat(document.getElementById("valor-pagamento").value);
         const tipo = document.getElementById("tipo-pagamento").value;
-        const metodo = prompt("Informe o método de pagamento: Pix, Dinheiro ou Isento").trim();
+
+        // 🔹 Melhor validação do método de pagamento
+        const metodosPermitidos = ["pix", "dinheiro", "isento"];
+        let metodo = "";
+
+        while (!metodosPermitidos.includes(metodo.toLowerCase())) {
+            metodo = prompt("Informe o método de pagamento: Pix, Dinheiro ou Isento").trim();
+            
+            if (!metodosPermitidos.includes(metodo.toLowerCase())) {
+                alert("Método inválido. Escolha entre Pix, Dinheiro ou Isento.");
+            }
+        }
+
         const data = new Date().toLocaleDateString("pt-BR");
-    
-        if (isNaN(valor) || valor <= 0 || !metodo) {
-            alert("Digite um valor e método de pagamento válido.");
+
+        if (isNaN(valor) || valor <= 0) {
+            alert("Digite um valor válido.");
             return;
         }
-    
+
         const novoPagamento = { data, valor, tipo, metodo };
         const pagamentos = JSON.parse(localStorage.getItem("pagamentos")) || [];
         pagamentos.push(novoPagamento);
-    
+
         localStorage.setItem("pagamentos", JSON.stringify(pagamentos));
         carregarPagamentos();
         gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
-    
+
         alert("Pagamento registrado com sucesso!");
         document.getElementById("form-pagamento").reset();
-    
+
         console.log("✅ Novo pagamento registrado:", novoPagamento);
     });
-    
 
     carregarPagamentos();
 
@@ -94,24 +118,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("registrar-treino").addEventListener("click", function () {
         const data = new Date().toLocaleDateString("pt-BR");
-    
+
         let treinos = JSON.parse(localStorage.getItem("treinos")) || [];
-    
+
         if (treinos.some(treino => treino.data === data)) {
             alert("Você já registrou um treino para hoje!");
             return;
         }
-    
+
         treinos.push({ data });
         localStorage.setItem("treinos", JSON.stringify(treinos));
-    
+
         carregarTreinos();
         gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
         alert("Treino registrado com sucesso!");
-    
+
         console.log("✅ Novo treino registrado:", data);
     });
-    
 
     carregarTreinos();
 
@@ -127,38 +150,37 @@ document.addEventListener("DOMContentLoaded", function () {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         monthYearElement.textContent = `${new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate)}`;
-    
+
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
+
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
             emptyCell.classList.add("calendar-day");
             emptyCell.style.visibility = "hidden";
             calendarGrid.appendChild(emptyCell);
         }
-    
+
         for (let day = 1; day <= daysInMonth; day++) {
             const dayCell = document.createElement("div");
             dayCell.classList.add("calendar-day");
             dayCell.textContent = day;
-    
+
             const dataCompleta = `${day}/${month + 1}/${year}`;
-    
+
             const pagamentos = JSON.parse(localStorage.getItem("pagamentos")) || [];
             const treinos = JSON.parse(localStorage.getItem("treinos")) || [];
-    
+
             if (pagamentos.some(p => p.data === dataCompleta)) {
                 dayCell.classList.add("pagamento");
             }
             if (treinos.some(t => t.data === dataCompleta)) {
                 dayCell.classList.add("treino");
             }
-    
+
             calendarGrid.appendChild(dayCell);
         }
     }
-    
 
     document.getElementById("prev-month").addEventListener("click", function () {
         currentDate.setMonth(currentDate.getMonth() - 1);
