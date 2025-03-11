@@ -1,11 +1,29 @@
-// Aguarda o carregamento completo do DOM antes de executar o script
+// 🔹 Importando Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔹 Configuração do Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk",
+    authDomain: "nagocapoeira-6cae5.firebaseapp.com",
+    projectId: "nagocapoeira-6cae5",
+    storageBucket: "nagocapoeira-6cae5.appspot.com",
+    messagingSenderId: "14626642245",
+    appId: ""
+};
+
+// 🔹 Inicializando o Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app); // Firestore agora inicializado corretamente
+
+// 🔹 Aguarda o carregamento completo do DOM antes de executar o script
 document.addEventListener("DOMContentLoaded", function () {
     console.log("🚀 Iniciando o Dashboard...");
 
     // 🔹 Verifica se há um usuário autenticado no localStorage
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-    if (!usuarioLogado) {
+    if (!usuarioLogado || !usuarioLogado.uid) {
         alert("Acesso negado! Para acessar esta área, você precisa estar autenticado.");
         window.location.href = "index.html";
         return;
@@ -24,135 +42,122 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "index.html";
     });
 
-    // ===================== 🔹 PAGAMENTOS 🔹 =====================
-    function carregarPagamentos() {
-        const pagamentos = JSON.parse(localStorage.getItem("pagamentos")) || [];
+    // ===================== 🔹 FUNÇÃO PARA CARREGAR PAGAMENTOS 🔹 =====================
+    async function carregarPagamentos() {
+        console.log("🚀 Buscando pagamentos do usuário...");
+
+        const usuarioId = usuarioLogado.uid;
+        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+        const pagamentosSnapshot = await getDocs(pagamentosRef);
+
         const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
         tabelaPagamentos.innerHTML = "";
 
-        if (pagamentos.length === 0) {
+        if (pagamentosSnapshot.empty) {
             tabelaPagamentos.innerHTML = "<tr><td colspan='3'>Nenhum pagamento registrado.</td></tr>";
             return;
         }
 
-        pagamentos.forEach(pagamento => {
+        pagamentosSnapshot.forEach((doc) => {
+            const pagamento = doc.data();
+            const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
+
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${pagamento.data}</td>
+                <td>${dataFormatada}</td>
                 <td>R$ ${pagamento.valor.toFixed(2)}</td>
-                <td>${pagamento.tipo} (${pagamento.metodo})</td>
+                <td>${pagamento.metodo} (${pagamento.referencia})</td>
             `;
             tabelaPagamentos.appendChild(row);
         });
 
-        console.log("📌 Pagamentos carregados:", pagamentos);
+        console.log("✅ Pagamentos carregados com sucesso!");
     }
 
+    // ===================== 🔹 REGISTRO DE MENSALIDADE NO FIRESTORE 🔹 =====================
+    async function registrarMensalidade(valor, metodo, referencia) {
+        try {
+            const usuarioId = usuarioLogado.uid;
+            const dataPagamento = new Date();
+
+            // 🔹 Referência para a subcoleção 'pagamentos' dentro do usuário autenticado
+            const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+
+            // 🔹 Adiciona o pagamento ao Firestore
+            await addDoc(pagamentosRef, {
+                data: dataPagamento,
+                valor: valor,
+                metodo: metodo,
+                referencia: referencia,
+                status: "pago"
+            });
+
+            // 🔹 Atualiza o total pago pelo usuário no Firestore
+            const usuarioRef = doc(db, "usuarios", usuarioId);
+            await updateDoc(usuarioRef, {
+                total_pago: increment(valor)
+            });
+
+            alert("✅ Pagamento registrado com sucesso!");
+
+            console.log("📌 Novo pagamento registrado:", {
+                data: dataPagamento,
+                valor: valor,
+                metodo: metodo,
+                referencia: referencia
+            });
+
+            carregarPagamentos(); // 🔹 Atualiza a interface com os novos pagamentos
+            gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
+
+        } catch (error) {
+            console.error("❌ Erro ao registrar pagamento:", error);
+            alert("Erro ao registrar pagamento.");
+        }
+    }
+
+    // ===================== 🔹 FORMULÁRIO DE PAGAMENTO 🔹 =====================
     document.getElementById("form-pagamento").addEventListener("submit", function (event) {
         event.preventDefault();
 
         const valor = parseFloat(document.getElementById("valor-pagamento").value);
-        const tipo = document.getElementById("tipo-pagamento").value;
+        const metodo = document.getElementById("tipo-pagamento").value;
+        const referencia = `mensalidade ${new Date().toLocaleString("pt-BR", { month: "long", year: "numeric" })}`;
 
-        // 🔹 Melhor validação do método de pagamento
-        const metodosPermitidos = ["pix", "dinheiro", "isento"];
-        let metodo = "";
-
-        while (!metodosPermitidos.includes(metodo.toLowerCase())) {
-            metodo = prompt("Informe o método de pagamento: Pix, Dinheiro ou Isento").trim();
-            
-            if (!metodosPermitidos.includes(metodo.toLowerCase())) {
-                alert("Método inválido. Escolha entre Pix, Dinheiro ou Isento.");
-            }
-        }
-
-        const data = new Date().toLocaleDateString("pt-BR");
-
-        if (isNaN(valor) || valor <= 0) {
-            alert("Digite um valor válido.");
+        if (isNaN(valor) || valor <= 0 || !metodo) {
+            alert("Preencha os campos corretamente.");
             return;
         }
 
-        const novoPagamento = { data, valor, tipo, metodo };
-        const pagamentos = JSON.parse(localStorage.getItem("pagamentos")) || [];
-        pagamentos.push(novoPagamento);
-
-        localStorage.setItem("pagamentos", JSON.stringify(pagamentos));
-        carregarPagamentos();
-        gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
-
-        alert("Pagamento registrado com sucesso!");
+        registrarMensalidade(valor, metodo, referencia);
         document.getElementById("form-pagamento").reset();
-
-        console.log("✅ Novo pagamento registrado:", novoPagamento);
     });
 
-    carregarPagamentos();
+    // ===================== 🔹 GERAR CALENDÁRIO 🔹 =====================
+    async function gerarCalendario() {
+        console.log("🚀 Atualizando calendário...");
 
-    // ===================== 🔹 CONTROLE DE TREINOS 🔹 =====================
-    function carregarTreinos() {
-        const treinos = JSON.parse(localStorage.getItem("treinos")) || [];
-        const listaTreinos = document.getElementById("treinos-list");
-        const totalTreinosElement = document.getElementById("total-treinos");
-
-        listaTreinos.innerHTML = "";
-
-        if (treinos.length === 0) {
-            listaTreinos.innerHTML = "<li>Nenhum treino registrado.</li>";
-            totalTreinosElement.textContent = "0";
-            return;
-        }
-
-        treinos.forEach(treino => {
-            const li = document.createElement("li");
-            li.textContent = treino.data;
-            listaTreinos.appendChild(li);
-        });
-
-        const mesAtual = new Date().getMonth();
-        const totalTreinos = treinos.filter(treino => new Date(treino.data).getMonth() === mesAtual).length;
-        totalTreinosElement.textContent = totalTreinos;
-
-        console.log("📌 Treinos carregados:", treinos);
-    }
-
-    document.getElementById("registrar-treino").addEventListener("click", function () {
-        const data = new Date().toLocaleDateString("pt-BR");
-
-        let treinos = JSON.parse(localStorage.getItem("treinos")) || [];
-
-        if (treinos.some(treino => treino.data === data)) {
-            alert("Você já registrou um treino para hoje!");
-            return;
-        }
-
-        treinos.push({ data });
-        localStorage.setItem("treinos", JSON.stringify(treinos));
-
-        carregarTreinos();
-        gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
-        alert("Treino registrado com sucesso!");
-
-        console.log("✅ Novo treino registrado:", data);
-    });
-
-    carregarTreinos();
-
-    // ===================== 🔹 CALENDÁRIO 🔹 =====================
-    console.log("🚀 Iniciando o Calendário...");
-
-    let currentDate = new Date();
-    const monthYearElement = document.getElementById("month-year");
-    const calendarGrid = document.getElementById("calendar-grid");
-
-    function gerarCalendario() {
+        const calendarGrid = document.getElementById("calendar-grid");
         calendarGrid.innerHTML = "";
+
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         monthYearElement.textContent = `${new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate)}`;
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // 🔹 Buscar pagamentos do Firestore para preencher o calendário
+        const usuarioId = usuarioLogado.uid;
+        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+        const pagamentosSnapshot = await getDocs(pagamentosRef);
+
+        let pagamentos = [];
+        pagamentosSnapshot.forEach(doc => {
+            const dataFirestore = doc.data().data.toDate();
+            const dataFormatada = dataFirestore.toLocaleDateString("pt-BR");
+            pagamentos.push(dataFormatada);
+        });
 
         for (let i = 0; i < firstDay; i++) {
             const emptyCell = document.createElement("div");
@@ -168,18 +173,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const dataCompleta = `${day}/${month + 1}/${year}`;
 
-            const pagamentos = JSON.parse(localStorage.getItem("pagamentos")) || [];
-            const treinos = JSON.parse(localStorage.getItem("treinos")) || [];
-
-            if (pagamentos.some(p => p.data === dataCompleta)) {
+            if (pagamentos.includes(dataCompleta)) {
                 dayCell.classList.add("pagamento");
-            }
-            if (treinos.some(t => t.data === dataCompleta)) {
-                dayCell.classList.add("treino");
+                dayCell.innerHTML += " 💰";
             }
 
             calendarGrid.appendChild(dayCell);
         }
+
+        console.log("✅ Calendário atualizado com pagamentos:", pagamentos);
     }
 
     document.getElementById("prev-month").addEventListener("click", function () {
@@ -192,5 +194,10 @@ document.addEventListener("DOMContentLoaded", function () {
         gerarCalendario();
     });
 
-    gerarCalendario();
+    let currentDate = new Date();
+    const monthYearElement = document.getElementById("month-year");
+
+    carregarPagamentos(); // 🔹 Agora carrega os pagamentos ao iniciar
+    gerarCalendario(); // 🔹 Carrega o calendário ao iniciar
+
 });

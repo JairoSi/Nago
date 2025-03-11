@@ -81,13 +81,16 @@
         async function cadastrarUsuario(nome, email, senha) {
             try {
                 const senhaCriptografada = await hashSenha(senha);
-                await addDoc(collection(db, "usuarios"), {
+                const docRef = await addDoc(collection(db, "usuarios"), {
                     nome: nome,
                     email: email,
                     senha_hash: senhaCriptografada
                 });
+
                 alert("Usuário cadastrado com sucesso!");
                 document.getElementById("cadastro").style.display = "none"; // Fecha cadastro
+
+                console.log("🔹 Usuário cadastrado com ID:", docRef.id);
             } catch (error) {
                 alert("Erro ao cadastrar usuário: " + error.message);
             }
@@ -102,44 +105,41 @@
         });
 
         async function login(email, senhaDigitada) {
-    try {
-        const q = query(collection(db, "usuarios"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+            try {
+                const q = query(collection(db, "usuarios"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-            alert("Usuário não encontrado.");
-            return;
+                if (querySnapshot.empty) {
+                    alert("Usuário não encontrado.");
+                    return;
+                }
+
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+
+                const senhaCorreta = await bcrypt.compare(senhaDigitada, userData.senha_hash);
+
+                if (senhaCorreta) {
+                    alert("Login bem-sucedido!");
+
+                    // 🔹 Agora armazenamos também o UID do Firestore no localStorage
+                    localStorage.setItem("usuarioLogado", JSON.stringify({
+                        uid: userDoc.id,  // Adicionando UID do Firestore
+                        nome: userData.nome,
+                        email: userData.email
+                    }));
+
+                    console.log("Usuário salvo no localStorage:", localStorage.getItem("usuarioLogado"));
+
+                    window.location.href = "dashboard.html"; // 🔹 Redireciona para o painel
+                } else {
+                    alert("Senha incorreta.");
+                }
+            } catch (error) {
+                console.error("Erro ao fazer login:", error);
+                alert("Erro ao fazer login: " + error.message);
+            }
         }
-
-        const userDoc = querySnapshot.docs[0];
-        const userData = userDoc.data();
-
-        const senhaCorreta = await bcrypt.compare(senhaDigitada, userData.senha_hash);
-
-        if (senhaCorreta) {
-            alert("Login bem-sucedido!");
-
-            // 🔹 Certificando-se de que não há redeclaração da variável
-            localStorage.setItem("usuarioLogado", JSON.stringify({
-                nome: userData.nome,
-                email: userData.email
-            }));
-
-            console.log("Usuário salvo no localStorage:", localStorage.getItem("usuarioLogado"));
-
-            window.location.href = "dashboard.html"; // 🔹 Redireciona para o painel
-        } else {
-            alert("Senha incorreta.");
-        }
-    } catch (error) {
-        console.error("Erro ao fazer login:", error);
-        alert("Erro ao fazer login: " + error.message);
-    }
-}
-
-
-
-
 
         document.getElementById("login-form").addEventListener("submit", function(event) {
             event.preventDefault();
