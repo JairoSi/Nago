@@ -1,6 +1,6 @@
 // 🔹 Importando Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔹 Configuração do Firebase
 const firebaseConfig = {
@@ -14,190 +14,160 @@ const firebaseConfig = {
 
 // 🔹 Inicializando o Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app); // Firestore agora inicializado corretamente
+const db = getFirestore(app);
 
-// 🔹 Aguarda o carregamento completo do DOM antes de executar o script
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚀 Iniciando o Dashboard...");
+// 🔹 Captura o usuário do localStorage
+let usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-    // 🔹 Verifica se há um usuário autenticado no localStorage
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+if (!usuarioLogado || !usuarioLogado.uid) {
+    alert("Acesso negado! Para acessar esta área, você precisa estar autenticado.");
+    window.location.href = "index.html";
+}
 
-    if (!usuarioLogado || !usuarioLogado.uid) {
-        alert("Acesso negado! Para acessar esta área, você precisa estar autenticado.");
-        window.location.href = "index.html";
+// 🔹 Atualiza o nível do usuário ao fazer login
+async function carregarDadosUsuario() {
+    try {
+        const usuarioRef = doc(db, "usuarios", usuarioLogado.uid);
+        const usuarioSnap = await getDoc(usuarioRef);
+
+        if (usuarioSnap.exists()) {
+            const dadosUsuario = usuarioSnap.data();
+
+            usuarioLogado.nivel = dadosUsuario.nivel || "Aluno"; // 🔹 Atualiza o nível corretamente
+            localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+
+            console.log("✅ Usuário atualizado:", usuarioLogado);
+
+            document.getElementById("user-nome").textContent = usuarioLogado.nome;
+            document.getElementById("user-email").textContent = usuarioLogado.email;
+            document.getElementById("user-nivel").textContent = usuarioLogado.nivel;
+
+            aplicarRestricoesDeAcesso();
+        } else {
+            console.log("❌ Usuário não encontrado no Firestore.");
+        }
+    } catch (error) {
+        console.error("❌ Erro ao carregar usuário:", error);
+    }
+}
+
+// 🔹 Função para exibir seções conforme o nível do usuário
+function aplicarRestricoesDeAcesso() {
+    const nivelUsuario = usuarioLogado.nivel.toLowerCase();
+
+    if (nivelUsuario === "mestre") {
+        window.location.href = "gestao.html"; // 🔹 Redireciona diretamente para a página de gestão
         return;
     }
 
-    console.log("✅ Usuário autenticado:", usuarioLogado);
+    document.querySelectorAll(".nivel-restrito").forEach(el => el.style.display = "none");
 
-    // Exibe o nome e e-mail do usuário no dashboard
-    document.getElementById("user-nome").textContent = usuarioLogado.nome;
-    document.getElementById("user-email").textContent = usuarioLogado.email;
-
-    // ===================== 🔹 LOGOUT 🔹 =====================
-    document.getElementById("logout").addEventListener("click", function () {
-        localStorage.removeItem("usuarioLogado");
-        alert("Você saiu com sucesso!");
-        window.location.href = "index.html";
-    });
-
-    // ===================== 🔹 FUNÇÃO PARA CARREGAR PAGAMENTOS 🔹 =====================
-    async function carregarPagamentos() {
-        console.log("🚀 Buscando pagamentos do usuário...");
-
-        const usuarioId = usuarioLogado.uid;
-        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
-        const pagamentosSnapshot = await getDocs(pagamentosRef);
-
-        const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
-        tabelaPagamentos.innerHTML = "";
-
-        if (pagamentosSnapshot.empty) {
-            tabelaPagamentos.innerHTML = "<tr><td colspan='3'>Nenhum pagamento registrado.</td></tr>";
-            return;
-        }
-
-        pagamentosSnapshot.forEach((doc) => {
-            const pagamento = doc.data();
-            const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
-
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${dataFormatada}</td>
-                <td>R$ ${pagamento.valor.toFixed(2)}</td>
-                <td>${pagamento.metodo} (${pagamento.referencia})</td>
-            `;
-            tabelaPagamentos.appendChild(row);
-        });
-
-        console.log("✅ Pagamentos carregados com sucesso!");
+    if (nivelUsuario === "professor") {
+        document.querySelectorAll(".professor").forEach(el => el.style.display = "block");
+    } else if (nivelUsuario === "monitor") {
+        document.querySelectorAll(".monitor").forEach(el => el.style.display = "block");
     }
+}
 
-    // ===================== 🔹 REGISTRO DE MENSALIDADE NO FIRESTORE 🔹 =====================
-    async function registrarMensalidade(valor, metodo, referencia) {
-        try {
-            const usuarioId = usuarioLogado.uid;
-            const dataPagamento = new Date();
-
-            // 🔹 Referência para a subcoleção 'pagamentos' dentro do usuário autenticado
-            const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
-
-            // 🔹 Adiciona o pagamento ao Firestore
-            await addDoc(pagamentosRef, {
-                data: dataPagamento,
-                valor: valor,
-                metodo: metodo,
-                referencia: referencia,
-                status: "pago"
-            });
-
-            // 🔹 Atualiza o total pago pelo usuário no Firestore
-            const usuarioRef = doc(db, "usuarios", usuarioId);
-            await updateDoc(usuarioRef, {
-                total_pago: increment(valor)
-            });
-
-            alert("✅ Pagamento registrado com sucesso!");
-
-            console.log("📌 Novo pagamento registrado:", {
-                data: dataPagamento,
-                valor: valor,
-                metodo: metodo,
-                referencia: referencia
-            });
-
-            carregarPagamentos(); // 🔹 Atualiza a interface com os novos pagamentos
-            gerarCalendario(); // 🔹 Atualiza o calendário automaticamente
-
-        } catch (error) {
-            console.error("❌ Erro ao registrar pagamento:", error);
-            alert("Erro ao registrar pagamento.");
-        }
-    }
-
-    // ===================== 🔹 FORMULÁRIO DE PAGAMENTO 🔹 =====================
-    document.getElementById("form-pagamento").addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const valor = parseFloat(document.getElementById("valor-pagamento").value);
-        const metodo = document.getElementById("tipo-pagamento").value;
-        const referencia = `mensalidade ${new Date().toLocaleString("pt-BR", { month: "long", year: "numeric" })}`;
-
-        if (isNaN(valor) || valor <= 0 || !metodo) {
-            alert("Preencha os campos corretamente.");
-            return;
-        }
-
-        registrarMensalidade(valor, metodo, referencia);
-        document.getElementById("form-pagamento").reset();
-    });
-
-    // ===================== 🔹 GERAR CALENDÁRIO 🔹 =====================
-    async function gerarCalendario() {
-        console.log("🚀 Atualizando calendário...");
-
-        const calendarGrid = document.getElementById("calendar-grid");
-        calendarGrid.innerHTML = "";
-
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        monthYearElement.textContent = `${new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate)}`;
-
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        // 🔹 Buscar pagamentos do Firestore para preencher o calendário
-        const usuarioId = usuarioLogado.uid;
-        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
-        const pagamentosSnapshot = await getDocs(pagamentosRef);
-
-        let pagamentos = [];
-        pagamentosSnapshot.forEach(doc => {
-            const dataFirestore = doc.data().data.toDate();
-            const dataFormatada = dataFirestore.toLocaleDateString("pt-BR");
-            pagamentos.push(dataFormatada);
-        });
-
-        for (let i = 0; i < firstDay; i++) {
-            const emptyCell = document.createElement("div");
-            emptyCell.classList.add("calendar-day");
-            emptyCell.style.visibility = "hidden";
-            calendarGrid.appendChild(emptyCell);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayCell = document.createElement("div");
-            dayCell.classList.add("calendar-day");
-            dayCell.textContent = day;
-
-            const dataCompleta = `${day}/${month + 1}/${year}`;
-
-            if (pagamentos.includes(dataCompleta)) {
-                dayCell.classList.add("pagamento");
-                dayCell.innerHTML += " 💰";
-            }
-
-            calendarGrid.appendChild(dayCell);
-        }
-
-        console.log("✅ Calendário atualizado com pagamentos:", pagamentos);
-    }
-
-    document.getElementById("prev-month").addEventListener("click", function () {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        gerarCalendario();
-    });
-
-    document.getElementById("next-month").addEventListener("click", function () {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        gerarCalendario();
-    });
-
-    let currentDate = new Date();
-    const monthYearElement = document.getElementById("month-year");
-
-    carregarPagamentos(); // 🔹 Agora carrega os pagamentos ao iniciar
-    gerarCalendario(); // 🔹 Carrega o calendário ao iniciar
-
+// ===================== 🔹 LOGOUT 🔹 =====================
+document.getElementById("logout").addEventListener("click", function () {
+    localStorage.removeItem("usuarioLogado");
+    alert("Você saiu com sucesso!");
+    window.location.href = "index.html";
 });
+
+// ===================== 🔹 VARIÁVEL GLOBAL PARA O CALENDÁRIO 🔹 =====================
+let currentDate = new Date();
+
+// ===================== 🔹 CARREGAR PAGAMENTOS 🔹 =====================
+async function carregarPagamentos() {
+    console.log("🚀 Buscando pagamentos do usuário...");
+
+    const usuarioId = usuarioLogado.uid;
+    const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+    const pagamentosSnapshot = await getDocs(pagamentosRef);
+
+    const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
+    tabelaPagamentos.innerHTML = "";
+
+    if (pagamentosSnapshot.empty) {
+        tabelaPagamentos.innerHTML = "<tr><td colspan='5'>Nenhum pagamento registrado.</td></tr>";
+        return;
+    }
+
+    pagamentosSnapshot.forEach((doc) => {
+        const pagamento = doc.data();
+        const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${dataFormatada}</td>
+            <td>R$ ${pagamento.valor.toFixed(2)}</td>
+            <td>${pagamento.referencia}</td>
+            <td>${pagamento.metodo}</td>
+            <td>${pagamento.status}</td>
+        `;
+        tabelaPagamentos.appendChild(row);
+    });
+
+    console.log("✅ Pagamentos carregados com sucesso!");
+}
+
+// ===================== 🔹 GERAR CALENDÁRIO 🔹 =====================
+async function gerarCalendario() {
+    console.log("🚀 Atualizando calendário...");
+
+    const calendarGrid = document.getElementById("calendar-grid");
+    if (!calendarGrid) {
+        console.error("❌ Erro: Elemento 'calendar-grid' não encontrado.");
+        return;
+    }
+
+    calendarGrid.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    document.getElementById("month-year").textContent = `${new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate)}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const pagamentosRef = collection(db, "usuarios", usuarioLogado.uid, "pagamentos");
+    const pagamentosSnapshot = await getDocs(pagamentosRef);
+
+    let pagamentos = [];
+    pagamentosSnapshot.forEach(doc => {
+        const dataFirestore = doc.data().data.toDate();
+        const dataFormatada = dataFirestore.toLocaleDateString("pt-BR");
+        pagamentos.push(dataFormatada);
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.classList.add("calendar-day");
+        emptyCell.style.visibility = "hidden";
+        calendarGrid.appendChild(emptyCell);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement("div");
+        dayCell.classList.add("calendar-day");
+        dayCell.textContent = day;
+
+        const dataCompleta = `${day}/${month + 1}/${year}`;
+
+        if (pagamentos.includes(dataCompleta)) {
+            dayCell.classList.add("pagamento");
+            dayCell.innerHTML += " 💰";
+        }
+
+        calendarGrid.appendChild(dayCell);
+    }
+
+    console.log("✅ Calendário atualizado com pagamentos:", pagamentos);
+}
+
+// 🔹 Executa ao carregar a página
+carregarDadosUsuario();
+carregarPagamentos();
+gerarCalendario();

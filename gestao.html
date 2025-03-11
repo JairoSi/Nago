@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão do Grupo - Nago Capoeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Painel de Gestão</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Voltar ao Dashboard</a></li>
+                <li><a href="#" id="logout">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="perfil">
+        <h2>Meu Perfil</h2>
+        <p><strong>Nome:</strong> <span id="user-nome"></span></p>
+        <p><strong>Email:</strong> <span id="user-email"></span></p>
+        <p><strong>Nível:</strong> <span id="user-nivel"></span></p> <!-- 🔹 Agora exibe o nível do usuário -->
+    </section>
+
+    <section id="resumo">
+        <h2>Resumo do Grupo</h2>
+        <p><strong>Total de Alunos:</strong> <span id="total-alunos">0</span></p>
+        <p><strong>Total Arrecadado:</strong> R$ <span id="total-arrecadado">0,00</span></p>
+        <p><strong>Total de Doações:</strong> R$ <span id="total-doacoes">0,00</span></p>
+        <p><strong>Próximos Eventos:</strong> <span id="total-eventos">0</span></p>
+    </section>
+
+    <section id="pagamentos">
+        <h2>Pagamentos dos Alunos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Método</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-pagamentos">
+                <tr><td colspan="5">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="meus-pagamentos">
+        <h2>Meus Pagamentos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Método</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-meus-pagamentos">
+                <tr><td colspan="4">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="eventos">
+        <h2>Eventos</h2>
+        <ul id="lista-eventos">
+            <li>Carregando eventos...</li>
+        </ul>
+        <button id="adicionar-evento">Adicionar Novo Evento</button>
+    </section>
+
+    <section id="gerenciar-usuarios" class="nivel-restrito mestre">
+        <h2>Gerenciar Usuários</h2>
+        <label for="usuario-select">Selecione um usuário:</label>
+        <select id="usuario-select">
+            <option value="">Carregando usuários...</option>
+        </select>
+
+        <label for="novo-nivel">Novo Nível:</label>
+        <select id="novo-nivel">
+            <option value="Aluno">Aluno</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Professor">Professor</option>
+            <option value="Mestre">Mestre</option>
+        </select>
+
+        <button id="alterar-nivel">Alterar Nível</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
+    </footer>
+
+    <script type="module" src="gestao.js"></script>
+</body>
+</html>

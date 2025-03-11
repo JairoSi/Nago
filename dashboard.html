@@ -24,6 +24,7 @@
         <img id="user-foto" src="default-avatar.png" alt="Foto do usuário">
         <p><strong>Nome:</strong> <span id="user-nome"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
+        <p><strong>Nível:</strong> <span id="user-nivel"></span></p> <!-- 🔹 Novo campo adicionado -->
         <button id="editar-perfil">Editar Perfil</button>
     </section>
 
@@ -35,11 +36,13 @@
                     <th>Data</th>
                     <th>Valor</th>
                     <th>Tipo</th>
+                    <th>Método</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="3">Carregando pagamentos...</td>
+                    <td colspan="5">Carregando pagamentos...</td>
                 </tr>
             </tbody>
         </table>
@@ -74,27 +77,28 @@
                 <li>Ainda não há treinos registrados.</li>
             </ul>
         </div>
-        <section id="calendario">
-            <h2>Calendário de Pagamentos e Eventos</h2>
-        
-            <!-- 🔹 Controles para mudar de mês -->
-            <div id="calendar-container">
-                <div id="calendar-header">
-                    <button id="prev-month">◀</button>
-                    <h3 id="month-year">Carregando...</h3>
-                    <button id="next-month">▶</button>
-                </div>
-                <div id="calendar-grid"></div>
+    </section>
+
+    <section id="calendario">
+        <h2>Calendário de Pagamentos e Eventos</h2>
+
+        <!-- 🔹 Controles para mudar de mês -->
+        <div id="calendar-container">
+            <div id="calendar-header">
+                <button id="prev-month">◀</button>
+                <h3 id="month-year">Carregando...</h3>
+                <button id="next-month">▶</button>
             </div>
-        
-            <!-- 🔹 Legenda do calendário -->
-            <div class="legenda">
-                <p><span class="dot pagamento"></span> Pagamento Realizado</p>
-                <p><span class="dot treino"></span> Treino Registrado</p>
-                <p><span class="dot evento"></span> Evento</p>
-            </div>
-        </section>
-        
+            <div id="calendar-grid"></div>
+        </div>
+
+        <!-- 🔹 Legenda do calendário -->
+        <div class="legenda">
+            <p><span class="dot pagamento"></span> Pagamento Realizado</p>
+            <p><span class="dot treino"></span> Treino Registrado</p>
+            <p><span class="dot evento"></span> Evento</p>
+        </div>
+    </section>
 
     <footer>
         <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
