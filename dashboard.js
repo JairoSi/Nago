@@ -199,3 +199,11 @@ async function gerarCalendario() {
 carregarDadosUsuario();
 carregarPagamentos();
 gerarCalendario();
+
+// 🔹 Função de Logout
+document.getElementById("logout").addEventListener("click", function(event) {
+    event.preventDefault();
+    localStorage.removeItem("usuarioLogado"); // Remove os dados de login
+    alert("Você saiu da sua conta!");
+    window.location.href = "index.html"; // Redireciona para a página inicial
+});
