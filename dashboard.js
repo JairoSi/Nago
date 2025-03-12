@@ -1,6 +1,6 @@
 // 🔹 Importando Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, collection, addDoc, getDocs, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, collection, addDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔹 Configuração do Firebase
 const firebaseConfig = {
@@ -24,6 +24,9 @@ if (!usuarioLogado || !usuarioLogado.uid) {
     window.location.href = "index.html";
 }
 
+// 🔹 Definir a variável antes de usá-la no gerarCalendario()
+let currentDate = new Date();
+
 // 🔹 Atualiza o nível do usuário ao fazer login
 async function carregarDadosUsuario() {
     try {
@@ -32,8 +35,7 @@ async function carregarDadosUsuario() {
 
         if (usuarioSnap.exists()) {
             const dadosUsuario = usuarioSnap.data();
-
-            usuarioLogado.nivel = dadosUsuario.nivel || "Aluno"; // 🔹 Atualiza o nível corretamente
+            usuarioLogado.nivel = dadosUsuario.nivel || "Aluno"; 
             localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
 
             console.log("✅ Usuário atualizado:", usuarioLogado);
@@ -42,42 +44,91 @@ async function carregarDadosUsuario() {
             document.getElementById("user-email").textContent = usuarioLogado.email;
             document.getElementById("user-nivel").textContent = usuarioLogado.nivel;
 
+            // 🔹 Aplicar as restrições de acesso após carregar os dados
             aplicarRestricoesDeAcesso();
         } else {
             console.log("❌ Usuário não encontrado no Firestore.");
+            alert("Erro ao carregar usuário. Faça login novamente.");
+            window.location.href = "index.html";
         }
     } catch (error) {
         console.error("❌ Erro ao carregar usuário:", error);
     }
 }
 
-// 🔹 Função para exibir seções conforme o nível do usuário
+// 🔹 Função para validar nível de acesso
 function aplicarRestricoesDeAcesso() {
-    const nivelUsuario = usuarioLogado.nivel.toLowerCase();
-
-    if (nivelUsuario === "mestre") {
-        window.location.href = "gestao.html"; // 🔹 Redireciona diretamente para a página de gestão
+    if (!usuarioLogado || !usuarioLogado.nivel) {
+        console.error("❌ Erro: Nível do usuário não encontrado.");
         return;
     }
 
+    const nivelUsuario = usuarioLogado.nivel.toLowerCase();
+    console.log("🔹 Nível do usuário:", nivelUsuario);
+
+    // 🔹 Se for Mestre, redireciona para a página de gestão
+    if (nivelUsuario === "mestre") {
+        console.log("🔹 Redirecionando Mestre para gestao.html...");
+        window.location.href = "gestao.html";
+        return;
+    }
+
+    // 🔹 Oculta todas as seções restritas por padrão
     document.querySelectorAll(".nivel-restrito").forEach(el => el.style.display = "none");
 
+    // 🔹 Exibe permissões específicas com base no nível
     if (nivelUsuario === "professor") {
         document.querySelectorAll(".professor").forEach(el => el.style.display = "block");
     } else if (nivelUsuario === "monitor") {
         document.querySelectorAll(".monitor").forEach(el => el.style.display = "block");
+    } else if (nivelUsuario === "aluno") {
+        document.querySelectorAll(".aluno").forEach(el => el.style.display = "block");
     }
 }
 
-// ===================== 🔹 LOGOUT 🔹 =====================
-document.getElementById("logout").addEventListener("click", function () {
-    localStorage.removeItem("usuarioLogado");
-    alert("Você saiu com sucesso!");
-    window.location.href = "index.html";
-});
+// ===================== 🔹 REGISTRAR PAGAMENTO 🔹 =====================
+async function registrarPagamento(valor, metodo) {
+    console.log("🔹 Tentando registrar pagamento...");
+    
+    const usuarioId = usuarioLogado.uid;
+    if (!usuarioId) {
+        console.error("❌ Erro: Usuário não autenticado.");
+        return;
+    }
 
-// ===================== 🔹 VARIÁVEL GLOBAL PARA O CALENDÁRIO 🔹 =====================
-let currentDate = new Date();
+    try {
+        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+        await addDoc(pagamentosRef, {
+            valor: parseFloat(valor),
+            data: new Date(),
+            metodo: metodo,
+            status: "Pendente"
+        });
+
+        console.log("✅ Pagamento registrado com sucesso!");
+        alert("Pagamento registrado com sucesso!");
+        carregarPagamentos();
+    } catch (error) {
+        console.error("❌ Erro ao registrar pagamento:", error);
+    }
+}
+
+// 🔹 Capturar evento de submissão do formulário de pagamento
+document.getElementById("form-pagamento").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let valor = document.getElementById("valor-pagamento").value;
+    let metodo = document.getElementById("tipo-pagamento").value;
+
+    console.log("🔹 Formulário enviado. Valor:", valor, "Método:", metodo);
+
+    if (!valor || !metodo) {
+        alert("Preencha todos os campos antes de registrar o pagamento.");
+        return;
+    }
+
+    registrarPagamento(valor, metodo);
+});
 
 // ===================== 🔹 CARREGAR PAGAMENTOS 🔹 =====================
 async function carregarPagamentos() {
@@ -91,7 +142,7 @@ async function carregarPagamentos() {
     tabelaPagamentos.innerHTML = "";
 
     if (pagamentosSnapshot.empty) {
-        tabelaPagamentos.innerHTML = "<tr><td colspan='5'>Nenhum pagamento registrado.</td></tr>";
+        tabelaPagamentos.innerHTML = "<tr><td colspan='4'>Nenhum pagamento registrado.</td></tr>";
         return;
     }
 
@@ -103,7 +154,6 @@ async function carregarPagamentos() {
         row.innerHTML = `
             <td>${dataFormatada}</td>
             <td>R$ ${pagamento.valor.toFixed(2)}</td>
-            <td>${pagamento.referencia}</td>
             <td>${pagamento.metodo}</td>
             <td>${pagamento.status}</td>
         `;
@@ -154,9 +204,7 @@ async function gerarCalendario() {
         dayCell.classList.add("calendar-day");
         dayCell.textContent = day;
 
-        const dataCompleta = `${day}/${month + 1}/${year}`;
-
-        if (pagamentos.includes(dataCompleta)) {
+        if (pagamentos.includes(`${day}/${month + 1}/${year}`)) {
             dayCell.classList.add("pagamento");
             dayCell.innerHTML += " 💰";
         }

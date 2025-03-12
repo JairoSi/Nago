@@ -3,25 +3,42 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: #F5F5F5;
-    color: #333;
+    background: url('background-nago.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #FFFFFF; /* Mantém o texto branco para contraste */
     text-align: center;
 }
 
+/* 🔹 Escurecendo e suavizando o fundo */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Ajuste para mais ou menos transparência */
+    filter: blur(3px); /* Opcional: Suaviza a imagem de fundo */
+    z-index: -1;
+}
+
 header {
-    background: #007A33;
+    background: transparent;
     color: white;
     padding: 20px 0;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* 🔹 Fundo semitransparente no menu para melhor leitura */
 nav ul {
     list-style: none;
-    padding: 0;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.6); /* Fundo escuro para destacar as opções */
+    border-radius: 8px;
 }
 
 nav ul li {
@@ -29,42 +46,41 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: #FFFFFF; /* Texto branco para contraste */
     text-decoration: none;
     font-weight: bold;
     font-size: 1.2em;
-    transition: opacity 0.3s;
+    transition: color 0.3s;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Destaca o texto */
 }
 
 nav ul li a:hover {
-    opacity: 0.7;
+    color: #FFD700; /* Dourado vibrante no hover */
 }
 
+.active {
+    color: #FFD700; /* Dourado para indicar o menu ativo */
+}
+
+/* 🔹 Melhorando a leitura das seções */
 section {
-    background: white;
+    background: rgba(0, 0, 0, 0.7); /* Fundo escuro semitransparente */
     margin: 20px auto;
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 600px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
 }
 
 h2 {
-    color: #007A33;
-}
-
-/* 🔹 Estilizando o Perfil do Usuário */
-#perfil img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 10px;
+    color: #FFD700; /* Dourado para títulos */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
 }
 
 button {
-    background: #FFCC29;
-    color: #002776;
+    background: #006622; /* Verde escuro como destaque */
+    color: white;
     font-size: 1em;
     padding: 12px;
     border: none;
@@ -76,28 +92,17 @@ button {
 }
 
 button:hover {
-    background: #E6B800;
-}
-
-/* 🔹 Estilização Geral das Listas */
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-ul li {
-    background: #f0f0f0;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
+    background: #FFD700; /* Amarelo ouro no hover */
+    color: #000000;
 }
 
 /* 🔹 Estilização do Rodapé */
 footer {
     margin-top: 50px;
     padding: 20px;
-    background: #007A33;
+    background: #000000;
     color: white;
+    border-top: 1px solid #FFFFFF33;
 }
 
 /* 🔹 Ícone de Cadastro no Canto Inferior Direito */
@@ -112,178 +117,100 @@ footer {
     cursor: pointer;
 }
 
-/* 🔹 Cadastro e Login Inicialmente Ocultos */
-#cadastro, #login {
+/* 🔹 Ajustando a posição do formulário de cadastro */
+#cadastro {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px 0 0 10px;
+    box-shadow: -4px 0 10px rgba(255, 255, 255, 0.1);
     display: none;
 }
 
-/* ===================== 🔹 PAGAMENTOS 🔹 ===================== */
+/* 🔹 Mostrar Cadastro ao Clicar no Ícone */
+#cadastro-icon:hover + #cadastro {
+    display: block;
+}
+
+/* 🔹 Esconder o login até ser acionado */
+#login {
+    display: none;
+}
+
+.show-login {
+    display: block !important;
+}
+
+/* 🔹 Estilização dos Pagamentos */
 #pagamentos {
-    background: white;
+    background: rgba(0, 0, 0, 0.7); /* Melhorando a leitura */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
     width: 90%;
     max-width: 600px;
     margin: 20px auto;
 }
 
+/* 🔹 Configuração do Grid de Pagamentos */
+#tabela-container {
+    max-height: 300px; /* Tamanho fixo antes do scroll aparecer */
+    overflow-y: auto;  /* Permite rolagem quando a lista crescer */
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 🔹 Tabela de pagamentos */
 #tabela-pagamentos {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.1);
 }
 
+/* 🔹 Mantendo o cabeçalho fixo */
+#tabela-pagamentos thead {
+    position: sticky;
+    top: 0;
+    background: #006622; /* Cor fixa no cabeçalho */
+    color: white;
+    z-index: 10;
+}
+
+/* 🔹 Estilizando células */
 #tabela-pagamentos th, #tabela-pagamentos td {
-    border: 1px solid #ddd;
     padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
 }
 
-#tabela-pagamentos th {
-    background: #007A33;
-    color: white;
+/* 🔹 Alternância de cores para melhor leitura */
+#tabela-pagamentos tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-#tabela-pagamentos td {
-    background: #f8f8f8;
-}
-
-#form-pagamento {
-    margin-top: 15px;
-}
-
-#form-pagamento input, #form-pagamento select {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-/* ===================== 🔹 CONTROLE DE TREINOS 🔹 ===================== */
-#treinos {
-    background: #FFF;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
-}
-
-/* 🔹 Cartão para exibir o total de treinos */
-.treino-info {
-    background: #FFCC29;
-    color: #002776;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 1.2em;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-/* 🔹 Caixa para exibir a lista de treinos */
-.treino-lista-container {
-    background: #f8f8f8;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 15px;
-}
-
-/* 🔹 Lista de treinos */
-#treinos-list {
-    list-style: none;
-    padding: 0;
-    text-align: center;
-}
-
-#treinos-list li {
-    background: #e6e6e6;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-}
-
-/* 🔹 Melhorando o botão de registrar treino */
-#registrar-treino {
-    background: #007A33;
-    color: white;
-    font-size: 1.1em;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-    width: 100%;
-    margin-top: 10px;
-}
-
-#registrar-treino:hover {
-    background: #005922;
-}
-
-/* ===================== 🔹 CALENDÁRIO ESTILIZADO 🔹 ===================== */
-#calendario {
-    background: #FFF;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 700px;
-    margin: 20px auto;
-    text-align: center;
-}
-
-#calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 10px;
-}
-
-#calendar-header h3 {
-    margin: 0;
-    font-size: 1.4em;
-}
-
-#prev-month, #next-month {
-    background: #007A33;
-    color: white;
-    font-size: 1.2em;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
+/* 🔹 Calendário */
+/* 🔹 Estilização do Calendário */
 #calendar-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, 1fr); /* 7 colunas para os dias da semana */
     gap: 5px;
-    width: 100%;
-    max-width: 400px;
-    margin-top: 10px;
+    padding: 10px;
 }
 
+/* 🔹 Estilizando os dias do calendário */
 .calendar-day {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f0f0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
     border-radius: 5px;
+    text-align: center;
     font-weight: bold;
-    cursor: pointer;
+}
+
+/* 🔹 Destacando os dias com pagamentos */
+.pagamento {
+    background: #FFD700 !important;
+    color: black;
 }
