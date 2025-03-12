@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔹 Configuração do Firebase
 const firebaseConfig = {
@@ -15,12 +15,45 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔹 Verifica se o usuário tem permissão para acessar a página
+// 🔹 Captura o usuário do localStorage
 const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-if (!usuarioLogado || usuarioLogado.nivel !== "Mestre") {
-    alert("Acesso negado! Apenas Mestres podem acessar esta área.");
-    window.location.href = "dashboard.html";
+if (!usuarioLogado || !usuarioLogado.uid) {
+    alert("Acesso negado! Você precisa estar autenticado.");
+    window.location.href = "index.html";
+}
+
+// 🔹 Verifica se o usuário tem permissão para acessar a página
+async function verificarPermissao() {
+    try {
+        const usuarioRef = doc(db, "usuarios", usuarioLogado.uid);
+        const usuarioSnap = await getDoc(usuarioRef);
+
+        if (!usuarioSnap.exists()) {
+            alert("Usuário não encontrado.");
+            window.location.href = "index.html";
+            return;
+        }
+
+        const dadosUsuario = usuarioSnap.data();
+        const nivelUsuario = dadosUsuario.nivel || "Aluno";
+
+        // 🔹 Define os níveis permitidos (mantendo os já definidos)
+        const niveisPermitidos = ["Mestre", "Professor", "Monitor"];
+
+        if (!niveisPermitidos.includes(nivelUsuario)) {
+            alert("Acesso negado! Você não tem permissão para acessar esta área.");
+            window.location.href = "dashboard.html";
+        } else {
+            // 🔹 Remove o bloqueio visual caso o usuário seja autorizado
+            document.getElementById("bloqueio").style.display = "none";
+            console.log("✅ Acesso permitido:", nivelUsuario);
+        }
+    } catch (error) {
+        console.error("❌ Erro ao verificar permissão:", error);
+        alert("Erro ao verificar permissão. Redirecionando...");
+        window.location.href = "index.html";
+    }
 }
 
 // 🔹 Carregar os dados do grupo
@@ -141,7 +174,8 @@ document.getElementById("logout").addEventListener("click", function () {
 });
 
 // 🔹 Executa ao carregar a página
+verificarPermissao();
 carregarResumo();
 carregarPagamentos();
 carregarMeusPagamentos();
-carregarUsuarios(); // 🔹 Agora carrega os usuários para alteração de nível
+carregarUsuarios();

@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 🔹 Bloqueio de tela para validação -->
+    <div id="bloqueio" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 9999;"></div>
+
     <header>
         <h1>Painel de Gestão</h1>
         <nav>
@@ -21,7 +24,7 @@
         <h2>Meu Perfil</h2>
         <p><strong>Nome:</strong> <span id="user-nome"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <p><strong>Nível:</strong> <span id="user-nivel"></span></p> <!-- 🔹 Agora exibe o nível do usuário -->
+        <p><strong>Nível:</strong> <span id="user-nivel"></span></p>
     </section>
 
     <section id="resumo">
@@ -65,14 +68,6 @@
                 <tr><td colspan="4">Carregando...</td></tr>
             </tbody>
         </table>
-    </section>
-
-    <section id="eventos">
-        <h2>Eventos</h2>
-        <ul id="lista-eventos">
-            <li>Carregando eventos...</li>
-        </ul>
-        <button id="adicionar-evento">Adicionar Novo Evento</button>
     </section>
 
     <section id="gerenciar-usuarios" class="nivel-restrito mestre">

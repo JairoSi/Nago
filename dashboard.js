@@ -27,7 +27,7 @@ if (!usuarioLogado || !usuarioLogado.uid) {
 // 🔹 Definir a variável antes de usá-la no gerarCalendario()
 let currentDate = new Date();
 
-// 🔹 Atualiza o nível do usuário ao fazer login
+// 🔹 Atualiza o nível do usuário ao fazer login e redireciona conforme necessário
 async function carregarDadosUsuario() {
     try {
         const usuarioRef = doc(db, "usuarios", usuarioLogado.uid);
@@ -35,61 +35,36 @@ async function carregarDadosUsuario() {
 
         if (usuarioSnap.exists()) {
             const dadosUsuario = usuarioSnap.data();
-            usuarioLogado.nivel = dadosUsuario.nivel || "Aluno"; 
+
+            usuarioLogado.nivel = dadosUsuario.nivel || "Aluno";
             localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
 
             console.log("✅ Usuário atualizado:", usuarioLogado);
 
+            // 🔹 Redireciona para a página correta
+            if (window.location.pathname.includes("dashboard.html") && usuarioLogado.nivel === "Mestre") {
+                window.location.href = "gestao.html";
+            } else if (window.location.pathname.includes("gestao.html") && usuarioLogado.nivel !== "Mestre") {
+                window.location.href = "dashboard.html";
+            }
+
             document.getElementById("user-nome").textContent = usuarioLogado.nome;
             document.getElementById("user-email").textContent = usuarioLogado.email;
             document.getElementById("user-nivel").textContent = usuarioLogado.nivel;
-
-            // 🔹 Aplicar as restrições de acesso após carregar os dados
-            aplicarRestricoesDeAcesso();
         } else {
             console.log("❌ Usuário não encontrado no Firestore.");
-            alert("Erro ao carregar usuário. Faça login novamente.");
-            window.location.href = "index.html";
         }
     } catch (error) {
         console.error("❌ Erro ao carregar usuário:", error);
     }
 }
 
-// 🔹 Função para validar nível de acesso
-function aplicarRestricoesDeAcesso() {
-    if (!usuarioLogado || !usuarioLogado.nivel) {
-        console.error("❌ Erro: Nível do usuário não encontrado.");
-        return;
-    }
-
-    const nivelUsuario = usuarioLogado.nivel.toLowerCase();
-    console.log("🔹 Nível do usuário:", nivelUsuario);
-
-    // 🔹 Se for Mestre, redireciona para a página de gestão
-    if (nivelUsuario === "mestre") {
-        console.log("🔹 Redirecionando Mestre para gestao.html...");
-        window.location.href = "gestao.html";
-        return;
-    }
-
-    // 🔹 Oculta todas as seções restritas por padrão
-    document.querySelectorAll(".nivel-restrito").forEach(el => el.style.display = "none");
-
-    // 🔹 Exibe permissões específicas com base no nível
-    if (nivelUsuario === "professor") {
-        document.querySelectorAll(".professor").forEach(el => el.style.display = "block");
-    } else if (nivelUsuario === "monitor") {
-        document.querySelectorAll(".monitor").forEach(el => el.style.display = "block");
-    } else if (nivelUsuario === "aluno") {
-        document.querySelectorAll(".aluno").forEach(el => el.style.display = "block");
-    }
-}
-
 // ===================== 🔹 REGISTRAR PAGAMENTO 🔹 =====================
 async function registrarPagamento(valor, metodo) {
     console.log("🔹 Tentando registrar pagamento...");
-    
+    console.log("🔹 Valor:", valor);
+    console.log("🔹 Método:", metodo);
+
     const usuarioId = usuarioLogado.uid;
     if (!usuarioId) {
         console.error("❌ Erro: Usuário não autenticado.");
@@ -98,6 +73,7 @@ async function registrarPagamento(valor, metodo) {
 
     try {
         const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+
         await addDoc(pagamentosRef, {
             valor: parseFloat(valor),
             data: new Date(),
@@ -107,9 +83,11 @@ async function registrarPagamento(valor, metodo) {
 
         console.log("✅ Pagamento registrado com sucesso!");
         alert("Pagamento registrado com sucesso!");
+
         carregarPagamentos();
     } catch (error) {
         console.error("❌ Erro ao registrar pagamento:", error);
+        alert("Erro ao registrar pagamento. Verifique o console para mais detalhes.");
     }
 }
 
@@ -204,7 +182,9 @@ async function gerarCalendario() {
         dayCell.classList.add("calendar-day");
         dayCell.textContent = day;
 
-        if (pagamentos.includes(`${day}/${month + 1}/${year}`)) {
+        const dataCompleta = `${day}/${month + 1}/${year}`;
+
+        if (pagamentos.includes(dataCompleta)) {
             dayCell.classList.add("pagamento");
             dayCell.innerHTML += " 💰";
         }
