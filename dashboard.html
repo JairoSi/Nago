@@ -30,22 +30,27 @@
 
     <section id="pagamentos">
         <h2>Pagamentos</h2>
-        <table id="tabela-pagamentos">
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Tipo</th>
-                    <th>Método</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="5">Carregando pagamentos...</td>
-                </tr>
-            </tbody>
-        </table>
+        <!-- 🔹 Adicionado contêiner para rolagem - Modificado em 12/03/2025 às 21:30 -->
+        <div id="tabela-container">
+            <table id="tabela-pagamentos">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Tipo</th>
+                        <th>Método</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-pagamentos-body">
+                    <tr>
+                        <td colspan="5">Carregando pagamentos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
 
         <h3>Registrar Pagamento</h3>
         <form id="form-pagamento">

@@ -37,21 +37,25 @@
 
     <section id="pagamentos">
         <h2>Pagamentos dos Alunos</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Aluno</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                    <th>Método</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-pagamentos">
-                <tr><td colspan="5">Carregando...</td></tr>
-            </tbody>
-        </table>
+        <!-- 🔹 Adicionado contêiner para rolagem - Modificado em 12/03/2025 às 21:30 -->
+        <div id="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Método</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-pagamentos-body">
+                    <tr><td colspan="5">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </section>
+    
 
     <section id="meus-pagamentos">
         <h2>Meus Pagamentos</h2>

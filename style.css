@@ -95,6 +95,19 @@ button:hover {
     background: #FFD700; /* Amarelo ouro no hover */
     color: #000000;
 }
+/* ========================= 🔹 ALTERAÇÃO EM 12/03/2025 às 21:50 🔹 ========================= */
+/* 🔹 Ajuste no botão de Registrar Pagamento para manter tamanho uniforme */
+/* 🔹 Antes, o botão ocupava toda a largura do contêiner (width: 100%) */
+/* 🔹 Agora, ele tem largura automática e tamanho semelhante ao botão de Registrar Treino */
+
+#form-pagamento button {
+    width: auto;  /* 🔹 Define largura automática, igual ao botão de treinos */
+    padding: 10px 20px;  /* 🔹 Ajuste no espaçamento interno */
+    font-size: 1em; /* 🔹 Mantém tamanho do texto padronizado */
+    display: block;
+    margin: 10px auto;  /* 🔹 Centraliza o botão na tela */
+}
+
 
 /* 🔹 Estilização do Rodapé */
 footer {
