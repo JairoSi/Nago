@@ -23,6 +23,21 @@ if (!usuarioLogado || !usuarioLogado.uid) {
     window.location.href = "index.html";
 }
 
+// 🔹 ALTERAÇÃO EM 12/03/2025 às 22:40
+// 🔹 Correção: Garantir que o script só rode após o DOM estar carregado e que a tabela de pagamentos exista antes de ser manipulada.
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("📌 Documento carregado!");
+
+    const tabelaPagamentos = document.getElementById("tabela-pagamentos-body");
+    if (!tabelaPagamentos) {
+        console.error("❌ Erro: Elemento 'tabela-pagamentos-body' não encontrado no HTML.");
+        return;
+    }
+
+    console.log("✅ Tabela de pagamentos encontrada, carregando dados...");
+    carregarPagamentos();
+});
+
 // 🔹 Verifica se o usuário tem permissão para acessar a página
 async function verificarPermissao() {
     try {
@@ -78,9 +93,16 @@ async function carregarResumo() {
     document.getElementById("total-eventos").textContent = totalEventos;
 }
 
-// 🔹 Carregar pagamentos dos alunos
+// 🔹 ALTERAÇÃO EM 12/03/2025 às 22:40
+// 🔹 Correção: Adicionado verificação para evitar erro ao carregar pagamentos.
 async function carregarPagamentos() {
-    const tabelaPagamentos = document.getElementById("tabela-pagamentos");
+    const tabelaPagamentos = document.getElementById("tabela-pagamentos-body");
+
+    if (!tabelaPagamentos) {
+        console.error("❌ Erro: Elemento 'tabela-pagamentos-body' não encontrado.");
+        return;
+    }
+
     tabelaPagamentos.innerHTML = "<tr><td colspan='5'>Carregando...</td></tr>";
 
     const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
@@ -103,69 +125,6 @@ async function carregarPagamentos() {
     tabelaPagamentos.innerHTML = linhas || "<tr><td colspan='5'>Nenhum pagamento registrado.</td></tr>";
 }
 
-// 🔹 Carregar pagamentos do próprio usuário logado (Mestre)
-async function carregarMeusPagamentos() {
-    const tabelaMeusPagamentos = document.getElementById("tabela-meus-pagamentos");
-    tabelaMeusPagamentos.innerHTML = "<tr><td colspan='4'>Carregando...</td></tr>";
-
-    const usuarioId = usuarioLogado.uid;
-    const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
-    const pagamentosSnapshot = await getDocs(pagamentosRef);
-
-    let linhas = "";
-    pagamentosSnapshot.forEach((pagamento) => {
-        linhas += `
-            <tr>
-                <td>R$ ${pagamento.data().valor.toFixed(2)}</td>
-                <td>${new Date(pagamento.data().data.toDate()).toLocaleDateString("pt-BR")}</td>
-                <td>${pagamento.data().metodo}</td>
-                <td>${pagamento.data().status}</td>
-            </tr>`;
-    });
-
-    tabelaMeusPagamentos.innerHTML = linhas || "<tr><td colspan='4'>Nenhum pagamento registrado.</td></tr>";
-}
-
-// 🔹 Carregar lista de usuários para alteração de nível
-async function carregarUsuarios() {
-    const usuariosRef = collection(db, "usuarios");
-    const usuariosSnapshot = await getDocs(usuariosRef);
-
-    const usuarioSelect = document.getElementById("usuario-select");
-    usuarioSelect.innerHTML = "<option value=''>Selecione um usuário</option>";
-
-    usuariosSnapshot.forEach((userDoc) => {
-        const userData = userDoc.data();
-        usuarioSelect.innerHTML += `<option value="${userDoc.id}">${userData.nome} (${userData.nivel})</option>`;
-    });
-}
-
-// 🔹 Função para alterar o nível de um usuário
-async function alterarNivelUsuario() {
-    const usuarioId = document.getElementById("usuario-select").value;
-    const novoNivel = document.getElementById("novo-nivel").value;
-
-    if (!usuarioId) {
-        alert("Por favor, selecione um usuário.");
-        return;
-    }
-
-    try {
-        const usuarioRef = doc(db, "usuarios", usuarioId);
-        await updateDoc(usuarioRef, { nivel: novoNivel });
-
-        alert(`✅ Nível alterado com sucesso para ${novoNivel}!`);
-        carregarUsuarios(); // Atualiza a lista de usuários
-
-    } catch (error) {
-        console.error("❌ Erro ao alterar nível:", error);
-        alert("Erro ao alterar nível do usuário.");
-    }
-}
-
-// 🔹 Adicionar evento ao botão de alteração de nível
-document.getElementById("alterar-nivel").addEventListener("click", alterarNivelUsuario);
-
 // 🔹 LOGOUT
 document.getElementById("logout").addEventListener("click", function () {
     localStorage.removeItem("usuarioLogado");
@@ -176,6 +135,5 @@ document.getElementById("logout").addEventListener("click", function () {
 // 🔹 Executa ao carregar a página
 verificarPermissao();
 carregarResumo();
-carregarPagamentos();
 carregarMeusPagamentos();
 carregarUsuarios();

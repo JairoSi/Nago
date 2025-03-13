@@ -108,6 +108,16 @@ button:hover {
     margin: 10px auto;  /* 🔹 Centraliza o botão na tela */
 }
 
+/* 🔹 ALTERAÇÃO EM 12/03/2025 às 22:10 */
+/* 🔹 Correção: Ajustado max-height para garantir que a tabela tenha rolagem */
+#tabela-container {
+    max-height: 400px; /* 🔹 Antes estava 300px, aumentei para melhor visualização */
+    overflow-y: auto;  /* 🔹 Mantém rolagem ativada quando necessário */
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+}
 
 /* 🔹 Estilização do Rodapé */
 footer {

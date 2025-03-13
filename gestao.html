@@ -35,26 +35,29 @@
         <p><strong>Próximos Eventos:</strong> <span id="total-eventos">0</span></p>
     </section>
 
-    <section id="pagamentos">
-        <h2>Pagamentos dos Alunos</h2>
-        <!-- 🔹 Adicionado contêiner para rolagem - Modificado em 12/03/2025 às 21:30 -->
-        <div id="tabela-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Aluno</th>
-                        <th>Valor</th>
-                        <th>Data</th>
-                        <th>Método</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela-pagamentos-body">
-                    <tr><td colspan="5">Carregando...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+<!-- 🔹 ALTERAÇÃO EM 12/03/2025 às 22:10 -->
+<!-- 🔹 Correção: Adicionado id="tabela-pagamentos" para garantir que o script encontre a tabela corretamente -->
+
+<section id="pagamentos">
+    <h2>Pagamentos dos Alunos</h2>
+    <div id="tabela-container">
+        <table id="tabela-pagamentos"> <!-- 🔹 ID CORRIGIDO AQUI -->
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Método</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-pagamentos-body">
+                <tr><td colspan="5">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
     
 
     <section id="meus-pagamentos">
