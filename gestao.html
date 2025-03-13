@@ -35,31 +35,29 @@
         <p><strong>Próximos Eventos:</strong> <span id="total-eventos">0</span></p>
     </section>
 
-<!-- 🔹 ALTERAÇÃO EM 12/03/2025 às 22:10 -->
-<!-- 🔹 Correção: Adicionado id="tabela-pagamentos" para garantir que o script encontre a tabela corretamente -->
+    <!-- 🔹 Tabela de Pagamentos -->
+    <section id="pagamentos">
+        <h2>Pagamentos dos Alunos</h2>
+        <div id="tabela-container">
+            <table id="tabela-pagamentos">
+                <thead>
+                    <tr>
+                        <th>Aluno</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Método</th>
+                        <th>Status</th>
+                        <th>Ação</th> <!-- 🔹 Coluna para botões de aprovação/reprovação -->
+                    </tr>
+                </thead>
+                <tbody id="tabela-pagamentos-body">
+                    <tr><td colspan="6">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-<section id="pagamentos">
-    <h2>Pagamentos dos Alunos</h2>
-    <div id="tabela-container">
-        <table id="tabela-pagamentos"> <!-- 🔹 ID CORRIGIDO AQUI -->
-            <thead>
-                <tr>
-                    <th>Aluno</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                    <th>Método</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-pagamentos-body">
-                <tr><td colspan="5">Carregando...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</section>
-
-    
-
+    <!-- 🔹 Meus Pagamentos -->
     <section id="meus-pagamentos">
         <h2>Meus Pagamentos</h2>
         <table>
@@ -77,6 +75,7 @@
         </table>
     </section>
 
+    <!-- 🔹 Gerenciar Usuários -->
     <section id="gerenciar-usuarios" class="nivel-restrito mestre">
         <h2>Gerenciar Usuários</h2>
         <label for="usuario-select">Selecione um usuário:</label>
