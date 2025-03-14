@@ -109,6 +109,12 @@ document.getElementById("form-pagamento").addEventListener("submit", function(ev
 });
 
 // ===================== 🔹 CARREGAR PAGAMENTOS 🔹 =====================
+
+// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
+// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
+
+
+// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 22:10:00
 async function carregarPagamentos() {
     console.log("🚀 Buscando pagamentos do usuário...");
 
@@ -116,18 +122,23 @@ async function carregarPagamentos() {
     const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
     const pagamentosSnapshot = await getDocs(pagamentosRef);
 
+    let totalPago = 0;
+    let totalPendente = 0;
+    
     const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
     tabelaPagamentos.innerHTML = "";
 
     if (pagamentosSnapshot.empty) {
-        tabelaPagamentos.innerHTML = "<tr><td colspan='4'>Nenhum pagamento registrado.</td></tr>";
+        tabelaPagamentos.innerHTML = "<tr><td colspan='5'>Nenhum pagamento registrado.</td></tr>";
         return;
     }
 
     pagamentosSnapshot.forEach((doc) => {
         const pagamento = doc.data();
-        const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
+        console.log("🔎 Pagamento encontrado:", pagamento);
 
+        const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
+        
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${dataFormatada}</td>
@@ -136,10 +147,28 @@ async function carregarPagamentos() {
             <td>${pagamento.status}</td>
         `;
         tabelaPagamentos.appendChild(row);
+        
+        if (pagamento.status === "Aprovado") {
+            totalPago += parseFloat(pagamento.valor);
+        } else if (pagamento.status === "Pendente") {
+            totalPendente += parseFloat(pagamento.valor);
+        }
     });
+
+    console.log("✅ Total Pago:", totalPago, "| Total Pendente:", totalPendente);
+    
+    document.getElementById("total-pago").textContent = `R$ ${totalPago.toFixed(2)}`;
+    
+    const pendentesEl = document.getElementById("pagamentos-pendentes");
+    pendentesEl.textContent = totalPendente > 0 
+        ? `Você tem R$ ${totalPendente.toFixed(2)} em análise.` 
+        : "";
 
     console.log("✅ Pagamentos carregados com sucesso!");
 }
+// 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 22:10:00
+// 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
+
 
 // ===================== 🔹 GERAR CALENDÁRIO 🔹 =====================
 async function gerarCalendario() {
