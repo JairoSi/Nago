@@ -147,16 +147,17 @@ async function carregarPagamentos() {
             <td>${pagamento.status}</td>
         `;
         tabelaPagamentos.appendChild(row);
-        
-        if (pagamento.status === "Aprovado") {
+
+        // 🔹 Aceita variações do status "Aprovado"
+        if (["Aprovado", "Pago", "pago"].includes(pagamento.status)) {
             totalPago += parseFloat(pagamento.valor);
-        } else if (pagamento.status === "Pendente") {
+        } else if (["Pendente", "Em Análise"].includes(pagamento.status)) {
             totalPendente += parseFloat(pagamento.valor);
         }
     });
 
     console.log("✅ Total Pago:", totalPago, "| Total Pendente:", totalPendente);
-    
+
     document.getElementById("total-pago").textContent = `R$ ${totalPago.toFixed(2)}`;
     
     const pendentesEl = document.getElementById("pagamentos-pendentes");
@@ -166,6 +167,8 @@ async function carregarPagamentos() {
 
     console.log("✅ Pagamentos carregados com sucesso!");
 }
+
+
 // 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 22:10:00
 // 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
 
