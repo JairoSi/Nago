@@ -71,25 +71,33 @@
         </form>
     </section>
 
+    <!-- 🔹 ALTERAÇÃO EM 17/03/2025 às 10:30 - Transformação da lista em tabela -->
     <section id="treinos">
         <h2>Controle de Treinos</h2>
-
-        <!-- 🔹 Exibir total de treinos no mês -->
         <div class="treino-info">
             <p><strong>Total de treinos este mês:</strong> <span id="total-treinos">0</span></p>
         </div>
-
-        <!-- 🔹 Botão para registrar um treino -->
         <button id="registrar-treino">Registrar Treino Hoje</button>
 
-        <!-- 🔹 Lista de treinos realizados -->
-        <div class="treino-lista-container">
-            <h3>Treinos Realizados</h3>
-            <ul id="treinos-list">
-                <li>Ainda não há treinos registrados.</li>
-            </ul>
+        <div id="tabela-treinos-container">
+            <table id="tabela-treinos">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Tipo</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-treinos-body">
+                    <tr>
+                        <td colspan="4">Carregando treinos...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </section>
+    <!-- 🔹 FIM DA ALTERAÇÃO EM 17/03/2025 às 10:30 -->
 
     <section id="calendario">
         <h2>Calendário de Pagamentos e Eventos</h2>

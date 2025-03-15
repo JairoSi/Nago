@@ -1,8 +1,10 @@
-// 🔹 Importando Firebase
+// 🔹 INÍCIO DO CÓDIGO ATUALIZADO COM ENUMERAÇÃO CLARA (17/03/2025 às 13:45 - Horário de Brasília)
+
+// 1️⃣ Importações e inicialização do Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, collection, addDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔹 Configuração do Firebase
+// 2️⃣ Inicialização do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk",
     authDomain: "nagocapoeira-6cae5.firebaseapp.com",
@@ -12,24 +14,25 @@ const firebaseConfig = {
     appId: ""
 };
 
-// 🔹 Inicializando o Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔹 Captura o usuário do localStorage
+// 3️⃣ Recuperação do usuário logado do LocalStorage
 let usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
 if (!usuarioLogado || !usuarioLogado.uid) {
-    alert("Acesso negado! Para acessar esta área, você precisa estar autenticado.");
+    alert("Acesso negado! Faça login para continuar.");
     window.location.href = "index.html";
 }
 
-// 🔹 Definir a variável antes de usá-la no gerarCalendario()
+// 4️⃣ Variáveis Globais
 let currentDate = new Date();
 
-// 🔹 Atualiza o nível do usuário ao fazer login e redireciona conforme necessário
+// 5️⃣ Função para carregar dados do usuário e garantir redirecionamento correto
 async function carregarDadosUsuario() {
     try {
+        console.log("🔹 Buscando dados do usuário...");
+
         const usuarioRef = doc(db, "usuarios", usuarioLogado.uid);
         const usuarioSnap = await getDoc(usuarioRef);
 
@@ -41,37 +44,33 @@ async function carregarDadosUsuario() {
 
             console.log("✅ Usuário atualizado:", usuarioLogado);
 
-            // 🔹 Redireciona para a página correta
-            if (window.location.pathname.includes("dashboard.html") && usuarioLogado.nivel === "Mestre") {
+            // 🔹 Redirecionamento para usuários com nível de gestão
+            const niveisDeGestao = ["Mestre", "Administrador", "Instrutor"];
+            if (niveisDeGestao.includes(usuarioLogado.nivel)) {
+                console.log("🔹 Usuário de gestão identificado! Redirecionando...");
                 window.location.href = "gestao.html";
-            } else if (window.location.pathname.includes("gestao.html") && usuarioLogado.nivel !== "Mestre") {
-                window.location.href = "dashboard.html";
+                return;
             }
 
+            // 🔹 Exibe os dados do usuário no HTML
             document.getElementById("user-nome").textContent = usuarioLogado.nome;
             document.getElementById("user-email").textContent = usuarioLogado.email;
             document.getElementById("user-nivel").textContent = usuarioLogado.nivel;
+
         } else {
             console.log("❌ Usuário não encontrado no Firestore.");
+            window.location.href = "index.html";
         }
     } catch (error) {
         console.error("❌ Erro ao carregar usuário:", error);
+        window.location.href = "index.html";
     }
 }
 
-// ===================== 🔹 REGISTRAR PAGAMENTO 🔹 =====================
+// 6️⃣ Função para registrar pagamento no Firebase
 async function registrarPagamento(valor, metodo) {
-    console.log("🔹 Tentando registrar pagamento...");
-    console.log("🔹 Valor:", valor);
-    console.log("🔹 Método:", metodo);
-
-    const usuarioId = usuarioLogado.uid;
-    if (!usuarioId) {
-        console.error("❌ Erro: Usuário não autenticado.");
-        return;
-    }
-
     try {
+        const usuarioId = usuarioLogado.uid;
         const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
 
         await addDoc(pagamentosRef, {
@@ -81,105 +80,140 @@ async function registrarPagamento(valor, metodo) {
             status: "Pendente"
         });
 
-        console.log("✅ Pagamento registrado com sucesso!");
-        alert("Pagamento registrado com sucesso!");
-
         carregarPagamentos();
     } catch (error) {
-        console.error("❌ Erro ao registrar pagamento:", error);
-        alert("Erro ao registrar pagamento. Verifique o console para mais detalhes.");
+        alert("Erro ao registrar pagamento.");
     }
 }
 
-// 🔹 Capturar evento de submissão do formulário de pagamento
+// 7️⃣ Evento para capturar submissão do formulário de pagamento
 document.getElementById("form-pagamento").addEventListener("submit", function(event) {
     event.preventDefault();
 
     let valor = document.getElementById("valor-pagamento").value;
     let metodo = document.getElementById("tipo-pagamento").value;
 
-    console.log("🔹 Formulário enviado. Valor:", valor, "Método:", metodo);
-
-    if (!valor || !metodo) {
-        alert("Preencha todos os campos antes de registrar o pagamento.");
-        return;
-    }
+    if (!valor || !metodo) return;
 
     registrarPagamento(valor, metodo);
 });
 
-// ===================== 🔹 CARREGAR PAGAMENTOS 🔹 =====================
-
-// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
-// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
-
-
-// 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 22:10:00
+// 8️⃣ Função para carregar pagamentos do Firebase para a tabela
 async function carregarPagamentos() {
-    console.log("🚀 Buscando pagamentos do usuário...");
+    try {
+        const usuarioId = usuarioLogado.uid;
+        const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
+        const pagamentosSnapshot = await getDocs(pagamentosRef);
 
-    const usuarioId = usuarioLogado.uid;
-    const pagamentosRef = collection(db, "usuarios", usuarioId, "pagamentos");
-    const pagamentosSnapshot = await getDocs(pagamentosRef);
+        const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
+        tabelaPagamentos.innerHTML = "";
 
-    let totalPago = 0;
-    let totalPendente = 0;
-    
-    const tabelaPagamentos = document.querySelector("#tabela-pagamentos tbody");
-    tabelaPagamentos.innerHTML = "";
+        pagamentosSnapshot.forEach((doc) => {
+            const pagamento = doc.data();
+            const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
 
-    if (pagamentosSnapshot.empty) {
-        tabelaPagamentos.innerHTML = "<tr><td colspan='5'>Nenhum pagamento registrado.</td></tr>";
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${dataFormatada}</td>
+                <td>R$ ${pagamento.valor.toFixed(2)}</td>
+                <td>${pagamento.metodo}</td>
+                <td>${pagamento.status}</td>
+            `;
+            tabelaPagamentos.appendChild(row);
+        });
+    } catch (error) {
+        console.error("❌ Erro ao carregar pagamentos:", error);
+    }
+}
+
+// 9️⃣ Função para carregar treinos do Firebase
+async function carregarTreinos() {
+    try {
+        console.log("🔹 Carregando treinos...");
+
+        const usuarioId = usuarioLogado.uid;
+        const treinosRef = collection(db, "usuarios", usuarioId, "treinos");
+        const treinosSnapshot = await getDocs(treinosRef);
+
+        const tabelaTreinos = document.querySelector("#tabela-treinos tbody");
+        tabelaTreinos.innerHTML = "";
+
+        if (treinosSnapshot.empty) {
+            tabelaTreinos.innerHTML = "<tr><td colspan='4'>Ainda não há treinos registrados.</td></tr>";
+            return;
+        }
+
+        treinosSnapshot.forEach((doc) => {
+            const treino = doc.data();
+            const dataFormatada = treino.data;
+            const horaFormatada = treino.hora;
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${dataFormatada}</td>
+                <td>${horaFormatada}</td>
+                <td>${treino.tipo_registro}</td>
+                <td style="color: ${treino.status === 'Confirmado' ? 'green' : 'red'}; font-weight: bold;">${treino.status}</td>
+            `;
+            tabelaTreinos.appendChild(row);
+        });
+
+        console.log("✅ Treinos carregados com sucesso!");
+    } catch (error) {
+        console.error("❌ Erro ao carregar treinos:", error);
+    }
+}
+
+// 🔟 Função para registrar treino no Firebase
+async function registrarTreino(tipo_registro) {
+    try {
+        console.log("🔹 Tentando registrar treino...");
+
+        const treinoRef = collection(db, "usuarios", usuarioLogado.uid, "treinos");
+
+        await addDoc(treinoRef, {
+            data: new Date().toISOString().split('T')[0],
+            hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            tipo_registro,
+            status: "Confirmado"
+        });
+
+        console.log("✅ Treino registrado com sucesso!");
+        alert("Treino registrado com sucesso!");
+
+        carregarTreinos();
+    } catch (error) {
+        console.error("❌ Erro ao registrar treino:", error);
+        alert("Erro ao registrar treino.");
+    }
+}
+// 1️⃣4️⃣ Evento de clique para registrar treino ✅ (Correção)
+document.addEventListener("DOMContentLoaded", () => {
+    const botaoTreino = document.getElementById("registrar-treino");
+
+    if (!botaoTreino) {
+        console.error("❌ Erro: Botão 'registrar-treino' não encontrado no HTML.");
         return;
     }
 
-    pagamentosSnapshot.forEach((doc) => {
-        const pagamento = doc.data();
-        console.log("🔎 Pagamento encontrado:", pagamento);
-
-        const dataFormatada = pagamento.data.toDate().toLocaleDateString("pt-BR");
-        
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${dataFormatada}</td>
-            <td>R$ ${pagamento.valor.toFixed(2)}</td>
-            <td>${pagamento.metodo}</td>
-            <td>${pagamento.status}</td>
-        `;
-        tabelaPagamentos.appendChild(row);
-
-        // 🔹 Aceita variações do status "Aprovado"
-        if (["Aprovado", "Pago", "pago"].includes(pagamento.status)) {
-            totalPago += parseFloat(pagamento.valor);
-        } else if (["Pendente", "Em Análise"].includes(pagamento.status)) {
-            totalPendente += parseFloat(pagamento.valor);
+    botaoTreino.addEventListener("click", async () => {
+        console.log("🔹 Botão Registrar Treino Clicado!");
+        const confirmar = confirm("Deseja registrar um treino rápido agora?");
+        if (confirmar) {
+            await registrarTreino("rapido");
         }
     });
-
-    console.log("✅ Total Pago:", totalPago, "| Total Pendente:", totalPendente);
-
-    document.getElementById("total-pago").textContent = `R$ ${totalPago.toFixed(2)}`;
-    
-    const pendentesEl = document.getElementById("pagamentos-pendentes");
-    pendentesEl.textContent = totalPendente > 0 
-        ? `Você tem R$ ${totalPendente.toFixed(2)} em análise.` 
-        : "";
-
-    console.log("✅ Pagamentos carregados com sucesso!");
-}
+});
 
 
-// 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 22:10:00
-// 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:40:00
-
-
-// ===================== 🔹 GERAR CALENDÁRIO 🔹 =====================
+// 1️⃣1️⃣ Função para gerar calendário corretamente
 async function gerarCalendario() {
-    console.log("🚀 Atualizando calendário...");
+    console.log("🔹 Gerando calendário...");
 
     const calendarGrid = document.getElementById("calendar-grid");
+
     if (!calendarGrid) {
-        console.error("❌ Erro: Elemento 'calendar-grid' não encontrado.");
+        console.error("❌ Erro: Elemento 'calendar-grid' não encontrado no HTML.");
         return;
     }
 
@@ -187,20 +221,9 @@ async function gerarCalendario() {
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    document.getElementById("month-year").textContent = `${new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate)}`;
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    const pagamentosRef = collection(db, "usuarios", usuarioLogado.uid, "pagamentos");
-    const pagamentosSnapshot = await getDocs(pagamentosRef);
-
-    let pagamentos = [];
-    pagamentosSnapshot.forEach(doc => {
-        const dataFirestore = doc.data().data.toDate();
-        const dataFormatada = dataFirestore.toLocaleDateString("pt-BR");
-        pagamentos.push(dataFormatada);
-    });
 
     for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement("div");
@@ -213,24 +236,22 @@ async function gerarCalendario() {
         const dayCell = document.createElement("div");
         dayCell.classList.add("calendar-day");
         dayCell.textContent = day;
-
-        const dataCompleta = `${day}/${month + 1}/${year}`;
-
-        if (pagamentos.includes(dataCompleta)) {
-            dayCell.classList.add("pagamento");
-            dayCell.innerHTML += " 💰";
-        }
-
         calendarGrid.appendChild(dayCell);
     }
 
-    console.log("✅ Calendário atualizado com pagamentos:", pagamentos);
+    console.log("✅ Calendário gerado com sucesso!");
 }
 
-// 🔹 Executa ao carregar a página
-carregarDadosUsuario();
-carregarPagamentos();
-gerarCalendario();
+// 1️⃣2️⃣ Função de inicialização ao carregar a página
+async function iniciarPagina() {
+    await carregarDadosUsuario();
+    carregarPagamentos();
+    carregarTreinos();
+    gerarCalendario();
+}
+
+// 1️⃣3️⃣ Chama a inicialização ao carregar a página
+iniciarPagina();
 
 // 🔹 Função de Logout
 document.getElementById("logout").addEventListener("click", function(event) {
