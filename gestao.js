@@ -52,6 +52,9 @@ async function verificarPermissao() {
     }
 }
 
+
+// 5️⃣ 🔹 Função para carregar pagamentos separados por aluno ✅
+// 🆕 Atualização em 14/03/2025 - 16:30 (Brasília): Melhor organização da tabela e cores.
 // 5️⃣ 🔹 Função para carregar pagamentos separados por aluno ✅
 async function carregarPagamentos() {
     const tabelaPagamentos = document.getElementById("tabela-pagamentos-body");
@@ -102,17 +105,17 @@ async function carregarPagamentos() {
     Object.keys(pagamentosPorAluno).forEach((nomeAluno) => {
         let alunoData = pagamentosPorAluno[nomeAluno];
 
-        linhas += `<tr style="background: #f4f4f4;"><td colspan="6"><strong>${nomeAluno}</strong></td></tr>`;
+        linhas += `<tr style="background: #cce5ff; font-weight: bold;"><td colspan="6">${nomeAluno}</td></tr>`;
 
         alunoData.pagamentos.forEach((pagamento) => {
             const nomeBotao = pagamento.status === "pago" ? "Reprovar" : "Aprovar";
             linhas += `
-                <tr>
+                <tr style="background: #f9f9f9;">
                     <td>${pagamento.nome}</td>
                     <td>${pagamento.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
                     <td>${pagamento.data}</td>
                     <td>${pagamento.metodo}</td>
-                    <td id="status-${pagamento.pagamentoId}">${pagamento.status}</td>
+                    <td style="color: ${pagamento.status === 'pago' ? 'green' : 'red'}; font-weight: bold;">${pagamento.status}</td>
                     <td id="acao-${pagamento.pagamentoId}">
                         <button onclick="alterarStatusPagamento('${pagamento.userId}', '${pagamento.pagamentoId}', '${pagamento.status}')">${nomeBotao}</button>
                     </td>
@@ -120,16 +123,15 @@ async function carregarPagamentos() {
         });
 
         linhas += `
-            <tr style="background: #eaeaea; font-weight: bold;">
-                <td colspan="2">Total Pago: ${alunoData.totalPago.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
-                <td colspan="2">Total Pendente: ${alunoData.totalPendente.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+            <tr style="background: #e0e0e0; font-weight: bold;">
+                <td colspan="2" style="color: green;">Total Pago: ${alunoData.totalPago.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+                <td colspan="2" style="color: red;">Total Pendente: ${alunoData.totalPendente.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
                 <td colspan="2"></td>
             </tr>`;
     });
 
     tabelaPagamentos.innerHTML = linhas;
 }
-
 // 6️⃣ 🔹 Função para carregar pagamentos do usuário logado ✅
 window.carregarMeusPagamentos = async function () {
     const tabelaMeusPagamentos = document.getElementById("tabela-meus-pagamentos");
@@ -160,7 +162,6 @@ window.carregarMeusPagamentos = async function () {
         tabelaMeusPagamentos.innerHTML = "<tr><td colspan='4'>Erro ao carregar pagamentos.</td></tr>";
     }
 };
-
 // 7️⃣ 🔹 Função para carregar usuários ✅
 window.carregarUsuarios = async function () {
     try {
@@ -214,19 +215,61 @@ window.alterarNivelUsuario = async function () {
 };
 
 // 9️⃣ 🔹 Função para aprovar/reprovar pagamento ✅
-window.alterarStatusPagamento = async function (userId, pagamentoId, statusAtual) {
+// 9️⃣ 🔹 Função para aprovar/reprovar pagamento ✅
+// 🆕 Atualização em 14/03/2025 - 16:50 (Brasília): Corrigida a lógica de atualização do status e botão.
+// 9️⃣ 🔹 Função para aprovar/reprovar pagamento ✅
+// 🆕 Atualização em 14/03/2025 - 17:10 (Brasília): Correção para evitar erro de elemento nulo.
+// 9️⃣ 🔹 Função para aprovar/reprovar pagamento ✅
+// 🆕 Atualização em 14/03/2025 - 17:30 (Brasília): Correção para evitar erro ao buscar elementos no DOM.
+window.alterarStatusPagamento = async function (userId, pagamentoId) {
     try {
-        const novoStatus = statusAtual === "pendente" ? "pago" : "pendente";
+        // Obtém a referência do pagamento
         const pagamentoRef = doc(db, "usuarios", userId, "pagamentos", pagamentoId);
-        await updateDoc(pagamentoRef, { status: novoStatus });
+        const pagamentoSnap = await getDoc(pagamentoRef);
 
-        document.getElementById(`status-${pagamentoId}`).textContent = novoStatus;
-        document.getElementById(`acao-${pagamentoId}`).innerHTML = `<button onclick="alterarStatusPagamento('${userId}', '${pagamentoId}', '${novoStatus}')">${novoStatus === "pendente" ? "Aprovar" : "Reprovar"}</button>`;
+        if (!pagamentoSnap.exists()) {
+            alert("Erro: Pagamento não encontrado.");
+            return;
+        }
+
+        const pagamentoData = pagamentoSnap.data();
+        const statusAtual = pagamentoData.status;
+        const novoStatus = statusAtual === "pendente" ? "pago" : "pendente";
+
+        // Atualiza o status do pagamento no Firestore
+        await updateDoc(pagamentoRef, { status: novoStatus })
+            .then(() => console.log(`✅ Pagamento ${pagamentoId} atualizado no Firestore para: ${novoStatus}`))
+            .catch(err => console.error("Erro ao atualizar Firestore:", err));
+
+        // Pequeno delay para garantir que os elementos do DOM estejam disponíveis
+        setTimeout(() => {
+            const statusElement = document.getElementById(`status-${pagamentoId}`);
+            const botaoElement = document.getElementById(`acao-${pagamentoId}`);
+
+            if (statusElement) {
+                statusElement.textContent = novoStatus;
+                statusElement.style.color = novoStatus === "pago" ? "green" : "red";
+            } else {
+                console.warn(`⚠️ Elemento status-${pagamentoId} não encontrado.`);
+            }
+
+            if (botaoElement) {
+                botaoElement.innerHTML = `
+                    <button onclick="alterarStatusPagamento('${userId}', '${pagamentoId}')">
+                        ${novoStatus === "pendente" ? "Aprovar" : "Reprovar"}
+                    </button>`;
+            } else {
+                console.warn(`⚠️ Elemento acao-${pagamentoId} não encontrado.`);
+            }
+        }, 500); // Tempo para garantir que o DOM foi atualizado corretamente
+
     } catch (error) {
-        alert("Erro ao atualizar pagamento.");
+        console.error("❌ Erro ao atualizar pagamento:", error);
+        alert("Erro ao atualizar pagamento. Tente novamente.");
     }
-    // 🔹 Código mantido
 };
+
+
 
 // 🔟 🔹 Logout ✅
 document.getElementById("logout").addEventListener("click", function () {
