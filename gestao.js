@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔹 Configuração do Firebase
+// 1️⃣ 🔹 Configuração do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk",
     authDomain: "nagocapoeira-6cae5.firebaseapp.com",
@@ -11,11 +11,11 @@ const firebaseConfig = {
     appId: ""
 };
 
-// 🔹 Inicializando o Firebase
+// 2️⃣ 🔹 Inicializando o Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔹 Captura o usuário do localStorage
+// 3️⃣ 🔹 Captura o usuário do localStorage
 const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
 if (!usuarioLogado || !usuarioLogado.uid) {
@@ -23,7 +23,7 @@ if (!usuarioLogado || !usuarioLogado.uid) {
     window.location.href = "index.html";
 }
 
-// 🔹 Verifica se o usuário tem permissão para acessar a página
+// 4️⃣ 🔹 Verifica se o usuário tem permissão para acessar a página
 async function verificarPermissao() {
     try {
         const usuarioRef = doc(db, "usuarios", usuarioLogado.uid);
@@ -36,12 +36,11 @@ async function verificarPermissao() {
         }
 
         const dadosUsuario = usuarioSnap.data();
-        const nivelUsuario = dadosUsuario.nivel || "Aluno";
+        usuarioLogado.nivel = dadosUsuario.nivel || "Aluno";
 
-        // 🔹 Define os níveis permitidos para gestão
         const niveisPermitidos = ["Mestre", "Professor", "Contra-mestre"];
 
-        if (!niveisPermitidos.includes(nivelUsuario)) {
+        if (!niveisPermitidos.includes(usuarioLogado.nivel)) {
             alert("Acesso negado! Você não tem permissão para acessar esta área.");
             window.location.href = "dashboard.html";
         } else {
@@ -53,8 +52,7 @@ async function verificarPermissao() {
     }
 }
 
-// 🔹 Carregar pagamentos
-// 🔹 Função para carregar todos os pagamentos para os usuários da gestão
+// 5️⃣ 🔹 Função para carregar pagamentos separados por aluno ✅
 async function carregarPagamentos() {
     const tabelaPagamentos = document.getElementById("tabela-pagamentos-body");
 
@@ -63,40 +61,76 @@ async function carregarPagamentos() {
     tabelaPagamentos.innerHTML = "<tr><td colspan='6'>Carregando...</td></tr>";
 
     const usuariosSnapshot = await getDocs(collection(db, "usuarios"));
-    let linhas = "";
+    let pagamentosPorAluno = {};
 
     for (const userDoc of usuariosSnapshot.docs) {
         const pagamentosSnapshot = await getDocs(collection(db, "usuarios", userDoc.id, "pagamentos"));
 
+        let totalPago = 0;
+        let totalPendente = 0;
+        let pagamentos = [];
+
         pagamentosSnapshot.forEach((pagamento) => {
             const pagamentoData = pagamento.data();
-            const pagamentoId = pagamento.id;
+            const valor = parseFloat(pagamentoData.valor);
             const status = pagamentoData.status;
+            const dataFormatada = new Date(pagamentoData.data.toDate()).toLocaleDateString("pt-BR");
 
-            const podeAprovar = ["Mestre", "Professor", "Contra-mestre"].includes(usuarioLogado.nivel);
+            if (status === "pago") {
+                totalPago += valor;
+            } else {
+                totalPendente += valor;
+            }
 
-            // 🔹 Sempre inicia com "Aprovar" se estiver pendente
-            const nomeBotao = status === "pago" ? "Reprovar" : "Aprovar";
+            pagamentos.push({
+                nome: userDoc.data().nome,
+                valor,
+                data: dataFormatada,
+                metodo: pagamentoData.metodo,
+                status,
+                pagamentoId: pagamento.id,
+                userId: userDoc.id
+            });
+        });
 
+        if (pagamentos.length > 0) {
+            pagamentosPorAluno[userDoc.data().nome] = { pagamentos, totalPago, totalPendente };
+        }
+    }
+
+    let linhas = "";
+    Object.keys(pagamentosPorAluno).forEach((nomeAluno) => {
+        let alunoData = pagamentosPorAluno[nomeAluno];
+
+        linhas += `<tr style="background: #f4f4f4;"><td colspan="6"><strong>${nomeAluno}</strong></td></tr>`;
+
+        alunoData.pagamentos.forEach((pagamento) => {
+            const nomeBotao = pagamento.status === "pago" ? "Reprovar" : "Aprovar";
             linhas += `
                 <tr>
-                    <td>${userDoc.data().nome}</td>
-                    <td>R$ ${pagamentoData.valor.toFixed(2)}</td>
-                    <td>${new Date(pagamentoData.data.toDate()).toLocaleDateString("pt-BR")}</td>
-                    <td>${pagamentoData.metodo}</td>
-                    <td id="status-${pagamentoId}">${status}</td>
-                    <td id="acao-${pagamentoId}">
-                        ${podeAprovar ? `<button onclick="alterarStatusPagamento('${userDoc.id}', '${pagamentoId}', '${status}')">${nomeBotao}</button>` : ""}
+                    <td>${pagamento.nome}</td>
+                    <td>${pagamento.valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+                    <td>${pagamento.data}</td>
+                    <td>${pagamento.metodo}</td>
+                    <td id="status-${pagamento.pagamentoId}">${pagamento.status}</td>
+                    <td id="acao-${pagamento.pagamentoId}">
+                        <button onclick="alterarStatusPagamento('${pagamento.userId}', '${pagamento.pagamentoId}', '${pagamento.status}')">${nomeBotao}</button>
                     </td>
                 </tr>`;
         });
-    }
 
-    tabelaPagamentos.innerHTML = linhas || "<tr><td colspan='6'>Nenhum pagamento registrado.</td></tr>";
+        linhas += `
+            <tr style="background: #eaeaea; font-weight: bold;">
+                <td colspan="2">Total Pago: ${alunoData.totalPago.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+                <td colspan="2">Total Pendente: ${alunoData.totalPendente.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</td>
+                <td colspan="2"></td>
+            </tr>`;
+    });
+
+    tabelaPagamentos.innerHTML = linhas;
 }
 
-
-// 🔹 Função para carregar apenas os pagamentos do usuário logado
+// 6️⃣ 🔹 Função para carregar pagamentos do usuário logado ✅
 window.carregarMeusPagamentos = async function () {
     const tabelaMeusPagamentos = document.getElementById("tabela-meus-pagamentos");
 
@@ -121,28 +155,13 @@ window.carregarMeusPagamentos = async function () {
                 </tr>`;
         });
 
-        tabelaMeusPagamentos.innerHTML = linhas || "<tr><td colspan='4'>Nenhum pagamento encontrado.</td></tr>";
-
+        tabelaMeusPagamentos.innerHTML = linhas;
     } catch (error) {
         tabelaMeusPagamentos.innerHTML = "<tr><td colspan='4'>Erro ao carregar pagamentos.</td></tr>";
     }
 };
 
-// 🔹 Função para aprovar/reprovar pagamento
-window.alterarStatusPagamento = async function (userId, pagamentoId, statusAtual) {
-    try {
-        const novoStatus = statusAtual === "pendente" ? "pago" : "pendente";
-        const pagamentoRef = doc(db, "usuarios", userId, "pagamentos", pagamentoId);
-        await updateDoc(pagamentoRef, { status: novoStatus });
-
-        document.getElementById(`status-${pagamentoId}`).textContent = novoStatus;
-        document.getElementById(`acao-${pagamentoId}`).innerHTML = `<button onclick="alterarStatusPagamento('${userId}', '${pagamentoId}', '${novoStatus}')">${novoStatus === "pendente" ? "Aprovar" : "Reprovar"}</button>`;
-    } catch (error) {
-        alert("Erro ao atualizar pagamento.");
-    }
-};
-
-// 🔹 Função para carregar usuários
+// 7️⃣ 🔹 Função para carregar usuários ✅
 window.carregarUsuarios = async function () {
     try {
         const usuariosRef = collection(db, "usuarios");
@@ -166,9 +185,11 @@ window.carregarUsuarios = async function () {
     } catch (error) {
         console.error("❌ Erro ao carregar usuários:", error);
     }
+
+    // 🔹 Código mantido
 };
 
-// 🔹 Função para alterar nível do usuário
+// 8️⃣ 🔹 Função para alterar nível do usuário ✅
 window.alterarNivelUsuario = async function () {
     const usuarioId = document.getElementById("usuario-select").value;
     const novoNivel = document.getElementById("novo-nivel").value;
@@ -188,15 +209,32 @@ window.alterarNivelUsuario = async function () {
         console.error("❌ Erro ao alterar nível:", error);
         alert("Erro ao alterar nível do usuário.");
     }
+
+// 🔹 Código mantido
 };
 
-// 🔹 Logout
+// 9️⃣ 🔹 Função para aprovar/reprovar pagamento ✅
+window.alterarStatusPagamento = async function (userId, pagamentoId, statusAtual) {
+    try {
+        const novoStatus = statusAtual === "pendente" ? "pago" : "pendente";
+        const pagamentoRef = doc(db, "usuarios", userId, "pagamentos", pagamentoId);
+        await updateDoc(pagamentoRef, { status: novoStatus });
+
+        document.getElementById(`status-${pagamentoId}`).textContent = novoStatus;
+        document.getElementById(`acao-${pagamentoId}`).innerHTML = `<button onclick="alterarStatusPagamento('${userId}', '${pagamentoId}', '${novoStatus}')">${novoStatus === "pendente" ? "Aprovar" : "Reprovar"}</button>`;
+    } catch (error) {
+        alert("Erro ao atualizar pagamento.");
+    }
+    // 🔹 Código mantido
+};
+
+// 🔟 🔹 Logout ✅
 document.getElementById("logout").addEventListener("click", function () {
     localStorage.removeItem("usuarioLogado");
     window.location.href = "index.html";
 });
 
-// 🔹 Executa ao carregar a página
+// 1️⃣1️⃣ 🔹 Executa ao carregar a página ✅
 verificarPermissao();
 carregarPagamentos();
 carregarMeusPagamentos();
