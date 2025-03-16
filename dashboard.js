@@ -126,6 +126,8 @@ async function carregarPagamentos() {
     }
 }
 
+
+
 // 9️⃣ Função para carregar treinos do Firebase
 async function carregarTreinos() {
     try {

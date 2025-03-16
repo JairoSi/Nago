@@ -4,13 +4,13 @@ body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
-    background: url('background-nago.png') no-repeat center center fixed;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('background-nago.png') no-repeat center center fixed;
     background-size: cover;
     color: #FFFFFF; /* Texto branco para melhor contraste */
     text-align: center;
 }
 
-/* 🔹 (2) Escurecendo e suavizando o fundo */
+/* 🔹 (2) Suavização do fundo para melhorar legibilidade */
 body::before {
     content: "";
     position: fixed;
@@ -18,28 +18,32 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    filter: blur(3px);
+    background: rgba(0, 0, 0, 0.4);
+    filter: blur(2px);
     z-index: -1;
 }
 
-/* 🔹 (3) Cabeçalho (Usado em index.html, gestao.html e dashboard.html) */
+/* 🔹 (3) Cabeçalho fixo com ajuste para melhor navegação */
 header {
-    background: transparent;
+    background: rgba(0, 0, 0, 0.9);
     color: white;
-    padding: 20px 0;
+    padding: 15px 0;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
 }
 
-/* 🔹 (4) Menu de Navegação */
+/* 🔹 (4) Menu de Navegação atualizado */
 nav ul {
     list-style: none;
     padding: 10px;
     display: flex;
     justify-content: center;
     gap: 30px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
 }
 
@@ -48,45 +52,45 @@ nav ul li a {
     text-decoration: none;
     font-weight: bold;
     font-size: 1.2em;
-    transition: color 0.3s;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    transition: color 0.3s, transform 0.2s;
 }
 
 nav ul li a:hover {
     color: #FFD700;
+    transform: scale(1.1);
 }
 
 .active {
     color: #FFD700;
 }
 
-/* 🔹 (5) Melhorando a leitura das seções */
+/* 🔹 (5) Melhorando a estrutura das seções para melhor leitura */
 section {
     background: rgba(0, 0, 0, 0.7);
-    margin: 20px auto;
-    padding: 20px;
+    margin: 100px auto 20px auto;
+    padding: 25px;
     border-radius: 10px;
     width: 90%;
     max-width: 800px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
 }
 
-/* 🔹 (6) Títulos */
+/* 🔹 (6) Ajuste nos títulos para melhor visibilidade */
 h2 {
     color: #FFD700;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
 }
 
-/* 🔹 (7) Botões */
+/* 🔹 (7) Melhoria nos botões para uma interação mais fluida */
 button {
     background: #006622;
     color: white;
     font-size: 1em;
     padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+    transition: background 0.3s, transform 0.3s;
     width: 100%;
     margin-top: 10px;
 }
@@ -94,104 +98,58 @@ button {
 button:hover {
     background: #FFD700;
     color: #000000;
-    transform: scale(1.05);
+    transform: rotate(-2deg) scale(1.05);
 }
 
-/* 🔹 (8) Ajustes nos Formulários */
+/* 🔹 (8) Estilização da caixa de login para maior destaque */
 form {
     max-width: 90%;
     width: 400px;
     margin: 0 auto;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
 }
 
 input, select {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
     border: none;
     font-size: 1em;
 }
 
-/* 🔹 (9) Rodapé */
+/* 🔹 (9) Rodapé aprimorado para um visual mais profissional */
 footer {
     margin-top: 50px;
     padding: 20px;
     background: #000000;
     color: white;
-    border-top: 1px solid #FFFFFF33;
+    border-top: 2px solid #FFD700;
 }
 
-/* ===================== 🔹 (10) ESTILIZAÇÃO DAS TABELAS DE PAGAMENTO 🔹 ===================== */
-/* 🔹 Contêiner das tabelas */
+/* 🔹 (10) Estilização das Tabelas para melhor organização */
 #tabela-container {
     max-height: 400px;
     overflow-y: auto;
-    overflow-x: hidden;
-    width: 100%;
     border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
 }
 
-/* 🔹 (10.1) Estilização da Tabela de Gestão */
 #tabela-pagamentos {
     max-width: 900px;
     width: 100%;
     border-collapse: collapse;
-    background: #E0E0E0 !important; /* Cor da tabela de gestão */
+    background: #E0E0E0;
     color: #222222;
     border-radius: 8px;
     padding: 10px;
     table-layout: fixed;
 }
 
-/* 🔹 (10.2) Estilização da Tabela de Alunos */
-#tabela-pagamentos-alunos {
-    max-width: 900px;
-    width: 100%;
-    border-collapse: collapse;
-    background: #D6D6D6 !important; /* Cor da tabela de alunos */
-    color: #222222;
-    border-radius: 8px;
-    padding: 10px;
-    table-layout: fixed;
-}
-
-/* 🔹 Cabeçalho da tabela de alunos */
-#tabela-pagamentos-alunos th {
-    background: #B0B0B0;
-    color: #000000;
-    font-weight: bold;
-}
-
-/* 🔹 Alternância de cores apenas na tabela de alunos */
-#tabela-pagamentos-alunos tr:nth-child(even) {
-    background: #C4C4C4; /* Cinza mais escuro */
-}
-
-/* 🔹 Status de pagamento na tabela de alunos */
-#tabela-pagamentos-alunos .status-pago {
-    color: green;
-    font-weight: bold;
-}
-
-#tabela-pagamentos-alunos .status-pendente {
-    color: red;
-    font-weight: bold;
-}
-
-/* 🔹 Ajuste na Coluna "Ação" */
-#tabela-pagamentos-alunos th:nth-child(6),
-#tabela-pagamentos-alunos td:nth-child(6) {
-    font-size: 0.85em;
-    min-width: 120px;
-}
-
-/* ===================== 🔹 (11) ESTILIZAÇÃO DO CALENDÁRIO 🔹 ===================== */
+/* 🔹 (11) Melhorias no Calendário */
 #calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -199,7 +157,6 @@ footer {
     padding: 10px;
 }
 
-/* 🔹 Estilizando os dias do calendário */
 .calendar-day {
     background: rgba(255, 255, 255, 0.1);
     padding: 10px;
@@ -208,7 +165,6 @@ footer {
     font-weight: bold;
 }
 
-/* 🔹 Destacando os dias com pagamentos */
 .pagamento {
     background: #FFD700 !important;
     color: black;
