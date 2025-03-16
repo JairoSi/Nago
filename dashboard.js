@@ -207,22 +207,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// 🔹 INÍCIO DA ATUALIZAÇÃO (Calendário corrigido)
 
-// 1️⃣1️⃣ Função para gerar calendário corretamente
+// 4️⃣ Variáveis Globais
+
 async function gerarCalendario() {
     console.log("🔹 Gerando calendário...");
 
     const calendarGrid = document.getElementById("calendar-grid");
+    const tituloMes = document.getElementById("titulo-mes");
 
-    if (!calendarGrid) {
-        console.error("❌ Erro: Elemento 'calendar-grid' não encontrado no HTML.");
+    if (!calendarGrid || !tituloMes) {
+        console.error("❌ Erro: Elementos do calendário não encontrados no HTML.");
         return;
     }
 
     calendarGrid.innerHTML = "";
 
+    const meses = [
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
+
+    // ✅ Atualiza o nome do mês corretamente
+    tituloMes.textContent = `${meses[month]} ${year}`;
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -243,6 +254,31 @@ async function gerarCalendario() {
 
     console.log("✅ Calendário gerado com sucesso!");
 }
+
+// 🔹 Adicionando eventos apenas se os botões existirem
+document.addEventListener("DOMContentLoaded", () => {
+    const prevMonthBtn = document.getElementById("prev-month");
+    const nextMonthBtn = document.getElementById("next-month");
+
+    if (prevMonthBtn && nextMonthBtn) {
+        prevMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() - 1); // 🔹 Voltar um mês
+            gerarCalendario();
+        });
+
+        nextMonthBtn.addEventListener("click", () => {
+            currentDate.setMonth(currentDate.getMonth() + 1); // 🔹 Avançar um mês
+            gerarCalendario();
+        });
+    }
+
+    // 🔹 Inicializa o calendário na primeira carga
+    gerarCalendario();
+});
+
+
+// 🔹 TÉRMINO DA ATUALIZAÇÃO (Calendário corrigido)
+
 
 // 1️⃣2️⃣ Função de inicialização ao carregar a página
 async function iniciarPagina() {

@@ -171,3 +171,20 @@ footer {
     color: black;
 }
 
+
+#calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* 🔹 Ajusta o espaço entre os elementos */
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#calendar-header button {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
