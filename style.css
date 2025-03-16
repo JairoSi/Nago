@@ -98,7 +98,8 @@ button {
 button:hover {
     background: #FFD700;
     color: #000000;
-    transform: rotate(-2deg) scale(1.05);
+    /*transform: rotate(-2deg) scale(1.05);*/
+    transform: rotate(-2deg) scale(1.05); /* ⬅️ Aqui está o efeito de quebra */
 }
 
 /* 🔹 (8) Estilização da caixa de login para maior destaque */
