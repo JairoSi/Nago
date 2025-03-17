@@ -189,11 +189,11 @@ footer {
     cursor: pointer;
 }
 
+/* 🔹 Ajuste para deixar o botão de cadastro fixo no canto inferior direito */
 #cadastro-botao {
     position: fixed;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
+    bottom: 20px; /* Distância do rodapé */
+    right: 20px; /* Distância da lateral direita */
     background: rgba(0, 151, 57, 0.9);
     padding: 15px;
     border-radius: 10px;
@@ -203,6 +203,7 @@ footer {
     box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
     transition: background 0.3s;
     cursor: pointer;
+    z-index: 1000; /* Mantém o botão acima dos outros elementos */
 }
 
 #cadastro-botao:hover {
@@ -210,7 +211,7 @@ footer {
 }
 
 .cadastro-icon {
-    width: 60px;
+    width: 50px;
     height: auto;
 }
 
@@ -225,6 +226,7 @@ footer {
 #cadastro-botao:hover a {
     color: black;
 }
+
 
 /* 🔹 Ajuste do espaçamento do login */
 .login-container {
