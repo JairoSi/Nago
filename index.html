@@ -4,60 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Capoeira</title>
-    <style>
-        body {
-            background: url('background-capoeira.jpg') no-repeat center center fixed;
-            background-size: cover;
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            color: #fff;
-        }
-        .login-container {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            padding: 30px;
-            width: 350px;
-            margin: 100px auto;
-            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
-        }
-        h1 {
-            color: #FFD700;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-            font-size: 1em;
-        }
-        .login-btn {
-            background: #009739;
-            color: white;
-            font-size: 1em;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            width: 100%;
-        }
-        .login-btn:hover {
-            background: #FFD700;
-            color: black;
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nago Capoeira Campina Grande</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -75,42 +21,33 @@
         </nav>
     </header>
 
-    <!-- 🔹 Seção de Introdução -->
-
-
-    <!-- 🔹 Ícone de Cadastro -->
-    <div id="cadastro-icon"></div>
-
-    <!-- 🔹 Formulário de Cadastro -->
-    <section id="cadastro">
-        <h2>Cadastro de Usuário</h2>
-        <form id="cadastro-form">
-            <input type="text" id="nome" placeholder="Digite seu nome" required>
-            <input type="email" id="email" placeholder="Digite seu e-mail" required>
-            <input type="password" id="senha" placeholder="Digite sua senha" required>
-
-            <!-- 🔹 Seleção de Nível de Acesso -->
-            <label for="nivel">Nível de Acesso:</label>
-            <select id="nivel">
-                <option value="Aluno" selected>Aluno</option>
-                <option value="Monitor">Monitor</option>
-                <option value="Professor">Professor</option>
-                <option value="Mestre">Mestre</option>
-            </select>
-
-            <button type="submit">Cadastrar</button>
-        </form>
-    </section>
-
     <!-- 🔹 Área de Login -->
-    <section id="login">
-        <h2>Área do Aluno</h2>
+    <div class="login-container" style="margin-top: 120px;">
+        <h2>Login</h2>
         <form id="login-form">
             <input type="email" id="email-login" placeholder="Digite seu e-mail" required>
             <input type="password" id="senha-login" placeholder="Digite sua senha" required>
-            <button type="submit">Entrar</button>
+            <button type="submit" class="login-btn">Entrar</button>
         </form>
-    </section>
+    </div>
+
+    <!-- 🔹 Formulário de Cadastro (Inicia Oculto) -->
+    <div id="cadastro-container" class="cadastro-container" style="display: none; position: relative; padding: 20px; background: rgba(0, 0, 0, 0.8); border-radius: 15px; box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);">
+        <button id="fechar-cadastro" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5em; color: white; cursor: pointer;">&times;</button>
+        <h2>Cadastro de Usuário</h2>
+        <form id="cadastro-form">
+            <input type="text" id="nome" placeholder="Digite seu nome" required>
+            <input type="email" id="email-cadastro" placeholder="Digite seu e-mail" required>
+            <input type="password" id="senha-cadastro" placeholder="Digite sua senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <!-- 🔹 Botão de Cadastro Fixo na Lateral -->
+    <div id="cadastro-botao">
+        <img src="capoeira-icon.png" alt="Capoeira" class="cadastro-icon">
+        <a href="#" id="cadastro-link">Cadastre-se aqui</a>
+    </div>
 
     <!-- 🔹 Rodapé -->
     <footer>
@@ -158,7 +95,8 @@
                 });
 
                 alert("Usuário cadastrado com sucesso!");
-                document.getElementById("cadastro").style.display = "none"; // Fecha o cadastro
+                document.getElementById("cadastro-container").style.display = "none";
+                document.getElementById("login-form").style.display = "block";
             } catch (error) {
                 alert("Erro ao cadastrar usuário: " + error.message);
             }
@@ -168,8 +106,8 @@
         document.getElementById("cadastro-form").addEventListener("submit", function(event) {
             event.preventDefault();
             const nome = document.getElementById("nome").value;
-            const email = document.getElementById("email").value;
-            const senha = document.getElementById("senha").value;
+            const email = document.getElementById("email-cadastro").value;
+            const senha = document.getElementById("senha-cadastro").value;
             cadastrarUsuario(nome, email, senha);
         });
 
@@ -191,15 +129,12 @@
 
                 if (senhaCorreta) {
                     alert("Login bem-sucedido!");
-
-                    // 🔹 Armazena os dados do usuário no localStorage
                     localStorage.setItem("usuarioLogado", JSON.stringify({
                         uid: userDoc.id,
                         nome: userData.nome,
                         email: userData.email
                     }));
-
-                    window.location.href = "dashboard.html"; // 🔹 Redireciona para o painel
+                    window.location.href = "dashboard.html";
                 } else {
                     alert("Senha incorreta.");
                 }
@@ -208,7 +143,7 @@
             }
         }
 
-        // 🔹 Evento de Login
+        // 🔹 Corrigido: Evento para Submissão do Login
         document.getElementById("login-form").addEventListener("submit", function(event) {
             event.preventDefault();
             const email = document.getElementById("email-login").value;
@@ -216,19 +151,20 @@
             login(email, senha);
         });
 
-        // 🔹 Exibir login ao clicar no botão "Área do Aluno"
-        document.querySelectorAll("#abrir-login").forEach(btn => {
-            btn.addEventListener("click", function(event) {
-                event.preventDefault();
-                document.getElementById("login").style.display = "block";
-            });
+        // 🔹 Exibir formulário de cadastro ao clicar no botão de cadastro
+        document.getElementById("cadastro-botao").addEventListener("click", function(event) {
+            event.preventDefault();
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("cadastro-container").style.display = "block";
         });
 
-        // 🔹 Exibir o formulário de cadastro ao clicar no ícone
-        document.getElementById("cadastro-icon").addEventListener("click", function() {
-            document.getElementById("cadastro").style.display = "block";
+        // 🔹 Fechar formulário de cadastro e voltar ao login
+        document.getElementById("fechar-cadastro").addEventListener("click", function() {
+            document.getElementById("cadastro-container").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
         });
 
     </script>
+
 </body>
 </html>

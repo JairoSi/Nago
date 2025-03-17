@@ -188,3 +188,65 @@ footer {
     font-size: 1.5em;
     cursor: pointer;
 }
+
+#cadastro-botao {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: rgba(0, 151, 57, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    transition: background 0.3s;
+    cursor: pointer;
+}
+
+#cadastro-botao:hover {
+    background: #FFD700;
+}
+
+.cadastro-icon {
+    width: 60px;
+    height: auto;
+}
+
+#cadastro-botao a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#cadastro-botao:hover a {
+    color: black;
+}
+
+/* 🔹 Ajuste do espaçamento do login */
+.login-container {
+    position: relative;
+    top: 100px; /* Ajuste para garantir espaçamento suficiente no topo */
+    margin: auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    width: 400px; /* Define um tamanho padrão */
+}
+
+/* 🔹 Ajuste para garantir espaçamento entre o menu e rodapé */
+header {
+    margin-bottom: 50px; /* Adiciona espaço abaixo do cabeçalho */
+}
+
+nav {
+    margin-bottom: 40px; /* Espaço entre o menu e o conteúdo */
+}
+
+footer {
+    margin-top: 100px; /* Garante espaço extra acima do rodapé */
+}
