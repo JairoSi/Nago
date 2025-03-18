@@ -47,27 +47,24 @@
                         <th>Data</th>
                         <th>Método</th>
                         <th>Status</th>
-                        <th>Ação</th> <!-- 🔹 Coluna para botões de aprovação/reprovação -->
+                        <th>Ação</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-pagamentos-body">
                     <tr><td colspan="6">Carregando...</td></tr>
                 </tbody>
-                    <!-- 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 14/03/2025 às 10:30:00 -->
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"><strong>Total do Aluno:</strong></td>
-                            <td><strong id="total-pago-aluno">R$ 0,00</strong></td>
-                            <td><strong id="total-pendente-aluno">R$ 0,00</strong></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                    <!-- 🔹 FIM DA ALTERAÇÃO - Adicionado em 14/03/2025 às 10:30:00 -->
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><strong>Total do Aluno:</strong></td>
+                        <td><strong id="total-pago-aluno">R$ 0,00</strong></td>
+                        <td><strong id="total-pendente-aluno">R$ 0,00</strong></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </section>
 
-    <!-- 🔹 Meus Pagamentos -->
     <section id="meus-pagamentos">
         <h2>Meus Pagamentos</h2>
         <table>
@@ -85,7 +82,6 @@
         </table>
     </section>
 
-    <!-- 🔹 Gerenciar Usuários -->
     <section id="gerenciar-usuarios" class="nivel-restrito mestre">
         <h2>Gerenciar Usuários</h2>
         <label for="usuario-select">Selecione um usuário:</label>
@@ -96,8 +92,10 @@
         <label for="novo-nivel">Novo Nível:</label>
         <select id="novo-nivel">
             <option value="Aluno">Aluno</option>
-            <option value="Monitor">Monitor</option>
+            <option value="Estagiário">Estagiário</option>
+            <option value="Graduado">Graduado</option>
             <option value="Professor">Professor</option>
+            <option value="Contra-mestre">Contra-mestre</option>
             <option value="Mestre">Mestre</option>
         </select>
 
