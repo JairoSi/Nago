@@ -1,0 +1,254 @@
+/* ===================== 🔹 (1) CONFIGURAÇÃO GERAL 🔹 ===================== */
+/* Define a fonte padrão, remove margens e ajusta o fundo */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url('background-nago.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #FFFFFF; /* Texto branco para melhor contraste */
+    text-align: center;
+}
+
+/* 🔹 (2) Suavização do fundo para melhorar legibilidade */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    filter: blur(2px);
+    z-index: -1;
+}
+
+/* 🔹 (3) Cabeçalho fixo com ajuste para melhor navegação */
+header {
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+/* 🔹 (4) Menu de Navegação atualizado */
+nav ul {
+    list-style: none;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+}
+
+nav ul li a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2em;
+    transition: color 0.3s, transform 0.2s;
+}
+
+nav ul li a:hover {
+    color: #FFD700;
+    transform: scale(1.1);
+}
+
+.active {
+    color: #FFD700;
+}
+
+/* 🔹 (5) Melhorando a estrutura das seções para melhor leitura */
+section {
+    background: rgba(0, 0, 0, 0.7);
+    margin: 100px auto 20px auto;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* 🔹 (6) Ajuste nos títulos para melhor visibilidade */
+h2 {
+    color: #FFD700;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* 🔹 (7) Melhoria nos botões para uma interação mais fluida */
+button {
+    background: #006622;
+    color: white;
+    font-size: 1em;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #FFD700;
+    color: #000000;
+    /*transform: rotate(-2deg) scale(1.05);*/
+    transform: rotate(-2deg) scale(1.05); /* ⬅️ Aqui está o efeito de quebra */
+}
+
+/* 🔹 (8) Estilização da caixa de login para maior destaque */
+form {
+    max-width: 90%;
+    width: 400px;
+    margin: 0 auto;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(255, 255, 255, 0.2);
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 1em;
+}
+
+/* 🔹 (9) Rodapé aprimorado para um visual mais profissional */
+footer {
+    margin-top: 50px;
+    padding: 20px;
+    background: #000000;
+    color: white;
+    border-top: 2px solid #FFD700;
+}
+
+/* 🔹 (10) Estilização das Tabelas para melhor organização */
+#tabela-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
+}
+
+#tabela-pagamentos {
+    max-width: 900px;
+    width: 100%;
+    border-collapse: collapse;
+    background: #E0E0E0;
+    color: #222222;
+    border-radius: 8px;
+    padding: 10px;
+    table-layout: fixed;
+}
+
+/* 🔹 (11) Melhorias no Calendário */
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    padding: 10px;
+}
+
+.calendar-day {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.pagamento {
+    background: #FFD700 !important;
+    color: black;
+}
+
+
+#calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px; /* 🔹 Ajusta o espaço entre os elementos */
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#calendar-header button {
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+/* 🔹 Ajuste para deixar o botão de cadastro fixo no canto inferior direito */
+#cadastro-botao {
+    position: fixed;
+    bottom: 20px; /* Distância do rodapé */
+    right: 20px; /* Distância da lateral direita */
+    background: rgba(0, 151, 57, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    transition: background 0.3s;
+    cursor: pointer;
+    z-index: 1000; /* Mantém o botão acima dos outros elementos */
+}
+
+#cadastro-botao:hover {
+    background: #FFD700;
+}
+
+.cadastro-icon {
+    width: 50px;
+    height: auto;
+}
+
+#cadastro-botao a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#cadastro-botao:hover a {
+    color: black;
+}
+
+
+/* 🔹 Ajuste do espaçamento do login */
+.login-container {
+    position: relative;
+    top: 100px; /* Ajuste para garantir espaçamento suficiente no topo */
+    margin: auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+    width: 400px; /* Define um tamanho padrão */
+}
+
+/* 🔹 Ajuste para garantir espaçamento entre o menu e rodapé */
+header {
+    margin-bottom: 50px; /* Adiciona espaço abaixo do cabeçalho */
+}
+
+nav {
+    margin-bottom: 40px; /* Espaço entre o menu e o conteúdo */
+}
+
+footer {
+    margin-top: 100px; /* Garante espaço extra acima do rodapé */
+}

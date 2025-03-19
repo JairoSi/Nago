@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Nago Capoeira</title>
+    <title>Login - Capoeira</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,6 +15,7 @@
             <ul>
                 <li><a href="#sobre">Sobre</a></li>
                 <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#" id="abrir-login">Área do Aluno</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
         </nav>
@@ -30,8 +31,8 @@
         </form>
     </div>
 
-    <!-- 🔹 Formulário de Cadastro (inicia oculto mas no mesmo arquivo) -->
-    <div id="cadastro-container" class="cadastro-container" style="display: none; padding: 20px; background: rgba(0, 0, 0, 0.8); border-radius: 15px; box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2); margin: 50px auto; width: 400px;">
+    <!-- 🔹 Formulário de Cadastro (Inicia Oculto) -->
+    <div id="cadastro-container" class="cadastro-container" style="display: none; position: relative; padding: 20px; background: rgba(0, 0, 0, 0.8); border-radius: 15px; box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);">
         <button id="fechar-cadastro" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5em; color: white; cursor: pointer;">&times;</button>
         <h2>Cadastro de Usuário</h2>
         <form id="cadastro-form">
@@ -42,10 +43,10 @@
         </form>
     </div>
 
-    <!-- 🔹 Botão de Cadastro Fixo e ícone clicável -->
-    <div id="cadastro-botao" onclick="document.getElementById('cadastro-container').style.display='block'; document.getElementById('login-form').style.display='none';">
+    <!-- 🔹 Botão de Cadastro Fixo na Lateral -->
+    <div id="cadastro-botao">
         <img src="capoeira-icon.png" alt="Capoeira" class="cadastro-icon">
-        <a href="#">Cadastre-se aqui</a>
+        <a href="#" id="cadastro-link">Cadastre-se aqui</a>
     </div>
 
     <!-- 🔹 Rodapé -->
@@ -56,59 +57,114 @@
     <!-- 🔹 Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import bcrypt from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/+esm";
-        import { firebaseConfig } from "./config.js";
+
+        // 🔹 Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEwWz8aFhwYQzQmBmQR5YFUBd7vg5mJSk",
+            authDomain: "nagocapoeira-6cae5.firebaseapp.com",
+            projectId: "nagocapoeira-6cae5",
+            storageBucket: "nagocapoeira-6cae5.appspot.com",
+            messagingSenderId: "14626642245",
+            appId: ""
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
-        document.getElementById('fechar-cadastro').addEventListener('click', function() {
-            document.getElementById('cadastro-container').style.display = 'none';
-            document.getElementById('login-form').style.display = 'block';
-        });
+        // 🔹 Garantir persistência do login
+        setPersistence(auth, browserLocalPersistence);
 
-        // Função de cadastro com privilégios padrão e informações adicionais
+        // 🔹 Função para Hash de Senha
+        async function hashSenha(senha) {
+            const salt = await bcrypt.genSalt(10);
+            return await bcrypt.hash(senha, salt);
+        }
+
+        // 🔹 Função para Cadastro de Usuário
         async function cadastrarUsuario(nome, email, senha) {
             try {
-                const senhaCriptografada = await bcrypt.hash(senha, 10);
+                const senhaCriptografada = await hashSenha(senha);
                 await addDoc(collection(db, "usuarios"), {
                     nome: nome,
                     email: email,
-                    senha_hash: senhaCriptografada,
-                    status: "pendente",
-                    grupo_origem: "externo",
-                    nivel: "Aluno",
-                    privilegios: {
-                        acessoFinanceiro: false,
-                        acessoGestao: true,
-                        aprovarMensalidade: false,
-                        cadastrarDespesas: false,
-                        cadastrarEventos: false,
-                        relatorioAlunos: false,
-                        rankingTreinos: 0
-                    },
-                    total_pago: 0
+                    senha_hash: senhaCriptografada
                 });
 
-                alert("Cadastro realizado com sucesso! Aguarde aprovação.");
-                document.getElementById('cadastro-container').style.display = 'none';
-                document.getElementById('login-form').style.display = 'block';
-
+                alert("Usuário cadastrado com sucesso!");
+                document.getElementById("cadastro-container").style.display = "none";
+                document.getElementById("login-form").style.display = "block";
             } catch (error) {
                 alert("Erro ao cadastrar usuário: " + error.message);
             }
         }
 
-        document.getElementById("cadastro-form").addEventListener("submit", async function(event) {
+        // 🔹 Evento de Cadastro
+        document.getElementById("cadastro-form").addEventListener("submit", function(event) {
             event.preventDefault();
             const nome = document.getElementById("nome").value;
             const email = document.getElementById("email-cadastro").value;
             const senha = document.getElementById("senha-cadastro").value;
             cadastrarUsuario(nome, email, senha);
         });
+
+        // 🔹 Função para Login
+        async function login(email, senhaDigitada) {
+            try {
+                const q = query(collection(db, "usuarios"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    alert("Usuário não encontrado.");
+                    return;
+                }
+
+                const userDoc = querySnapshot.docs[0];
+                const userData = userDoc.data();
+
+                const senhaCorreta = await bcrypt.compare(senhaDigitada, userData.senha_hash);
+
+                if (senhaCorreta) {
+                    alert("Login bem-sucedido!");
+                    localStorage.setItem("usuarioLogado", JSON.stringify({
+                        uid: userDoc.id,
+                        nome: userData.nome,
+                        email: userData.email
+                    }));
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Senha incorreta.");
+                }
+            } catch (error) {
+                alert("Erro ao fazer login: " + error.message);
+            }
+        }
+
+        // 🔹 Corrigido: Evento para Submissão do Login
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const email = document.getElementById("email-login").value;
+            const senha = document.getElementById("senha-login").value;
+            login(email, senha);
+        });
+
+        // 🔹 Exibir formulário de cadastro ao clicar no botão de cadastro
+        document.getElementById("cadastro-botao").addEventListener("click", function(event) {
+            event.preventDefault();
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("cadastro-container").style.display = "block";
+        });
+
+        // 🔹 Fechar formulário de cadastro e voltar ao login
+        document.getElementById("fechar-cadastro").addEventListener("click", function() {
+            document.getElementById("cadastro-container").style.display = "none";
+            document.getElementById("login-form").style.display = "block";
+        });
+
     </script>
-    <script type="module" src="login.js"></script>
 
 </body>
 </html>

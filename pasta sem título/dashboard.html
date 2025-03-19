@@ -24,13 +24,12 @@
         <img id="user-foto" src="default-avatar.png" alt="Foto do usuário">
         <p><strong>Nome:</strong> <span id="user-nome"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <p><strong>Nível:</strong> <span id="user-nivel"></span></p> <!-- 🔹 Novo campo adicionado -->
+        <p><strong>Nível:</strong> <span id="user-nivel"></span></p>
         <button id="editar-perfil">Editar Perfil</button>
     </section>
 
     <section id="pagamentos">
         <h2>Pagamentos</h2>
-        <!-- 🔹 Adicionado contêiner para rolagem - Modificado em 12/03/2025 às 21:30 -->
         <div id="tabela-container">
             <table id="tabela-pagamentos">
                 <thead>
@@ -49,29 +48,23 @@
                 </tbody>
             </table>
         </div>
-                <!-- 🔹 INÍCIO DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:35:00 -->
-                <div id="total-pago-container">
-                    <h3>Total Pago: <span id="total-pago">R$ 0,00</span></h3>
-                    <p id="pagamentos-pendentes"></p>
-                </div>
-                <!-- 🔹 FIM DA ALTERAÇÃO - Adicionado em 13/03/2025 às 21:35:00 -->
-        
-    </section>
-    
-
-        <h3>Registrar Pagamento</h3>
-        <form id="form-pagamento">
-            <input type="number" id="valor-pagamento" placeholder="Valor (R$)" required>
-            <select id="tipo-pagamento">
-                <option value="mensalidade">Mensalidade</option>
-                <option value="doacao">Doação</option>
-                <option value="premiacao">Premiação</option>
-            </select>
-            <button type="submit">Registrar Pagamento</button>
-        </form>
+        <div id="total-pago-container">
+            <h3>Total Pago: <span id="total-pago">R$ 0,00</span></h3>
+            <p id="pagamentos-pendentes"></p>
+        </div>
     </section>
 
-    <!-- 🔹 ALTERAÇÃO EM 17/03/2025 às 10:30 - Transformação da lista em tabela -->
+    <h3>Registrar Pagamento</h3>
+    <form id="form-pagamento">
+        <input type="number" id="valor-pagamento" placeholder="Valor (R$)" required>
+        <select id="tipo-pagamento">
+            <option value="mensalidade">Mensalidade</option>
+            <option value="doacao">Doação</option>
+            <option value="premiacao">Premiação</option>
+        </select>
+        <button type="submit">Registrar Pagamento</button>
+    </form>
+
     <section id="treinos">
         <h2>Controle de Treinos</h2>
         <div class="treino-info">
@@ -97,12 +90,9 @@
             </table>
         </div>
     </section>
-    <!-- 🔹 FIM DA ALTERAÇÃO EM 17/03/2025 às 10:30 -->
 
     <section id="calendario">
         <h2>Calendário de Pagamentos e Eventos</h2>
-
-        <!-- 🔹 Controles para mudar de mês -->
         <div id="calendar-container">
             <div id="calendar-header">
                 <button id="prev-month">◀</button>
@@ -111,8 +101,6 @@
             </div>
             <div id="calendar-grid"></div>
         </div>
-
-        <!-- 🔹 Legenda do calendário -->
         <div class="legenda">
             <p><span class="dot pagamento"></span> Pagamento Realizado</p>
             <p><span class="dot treino"></span> Treino Registrado</p>

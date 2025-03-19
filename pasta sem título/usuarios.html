@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habilitação de Aluno - Nago Capoeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Habilitação de Alunos</h1>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Voltar ao Dashboard</a></li>
+                <li><a href="#" id="logout">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="pendentes-lista">
+            <h2>Usuários Pendentes de Habilitação</h2>
+            <div id="pendentes-container">Carregando cadastros pendentes...</div>
+        </section>
+
+        <section id="habilitar-aluno" style="display: none;">
+            <h2>Formulário de Habilitação de Aluno</h2>
+            <form id="habilitar-form">
+                <p><strong>Nome:</strong> <span id="habilitar-nome"></span></p>
+                <p><strong>Email:</strong> <span id="habilitar-email"></span></p>
+
+                <label for="habilitar-nivel">Nível:</label>
+                <select id="habilitar-nivel">
+                    <option value="Aluno">Aluno</option>
+                    <option value="Estagiário">Estagiário</option>
+                    <option value="Graduado">Graduado</option>
+                    <option value="Professor">Professor</option>
+                    <option value="Contra-mestre">Contra-mestre</option>
+                    <option value="Mestre">Mestre</option>
+                </select>
+
+                <label for="habilitar-tipo-aluno">Tipo de Aluno:</label>
+                <select id="habilitar-tipo-aluno">
+                    <option value="Local">Local (Presencial)</option>
+                    <option value="Externo">Externo (Convidado/Online)</option>
+                </select>
+
+                <label for="frequencia-treinos">Frequência de Treinos:</label>
+                <select id="frequencia-treinos">
+                    <option value="1 vez/semana">1 vez por semana</option>
+                    <option value="2 vezes/semana">2 vezes por semana</option>
+                    <option value="Todos os dias">Todos os dias</option>
+                </select>
+
+                <label for="nome-responsavel">Nome do Responsável (se menor):</label>
+                <input type="text" id="nome-responsavel">
+
+                <label for="contato-responsavel">Contato do Responsável:</label>
+                <input type="text" id="contato-responsavel">
+
+                <p><strong>Autorização dos Pais:</strong> <label><input type="checkbox" id="autorizacao-pais"> Confirmo que recebi a autorização dos responsáveis.</label></p>
+
+                <p><strong>LGPD:</strong> <label><input type="checkbox" id="habilitar-lgpd"> Li e concordo com a Política de Privacidade e Uso de Dados</label></p>
+
+                <button type="submit">Habilitar Aluno</button>
+                <button type="button" onclick="cancelarHabilitacao()">Cancelar</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
+    </footer>
+
+    <script type="module" src="habilitar.js"></script>
+</body>
+</html>

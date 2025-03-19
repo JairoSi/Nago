@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Nago Capoeira</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 🔹 Cabeçalho -->
+    <header>
+        <h1>Nago Capoeira Campina Grande</h1>
+        <nav>
+            <ul>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 🔹 Área de Login -->
+    <div class="login-container" style="margin-top: 120px;">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="email" id="email-login" placeholder="Digite seu e-mail" required>
+            <input type="password" id="senha-login" placeholder="Digite sua senha" required>
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+    </div>
+
+    <!-- 🔹 Formulário de Cadastro (inicia oculto mas no mesmo arquivo) -->
+    <div id="cadastro-container" class="cadastro-container" style="display: none; padding: 20px; background: rgba(0, 0, 0, 0.8); border-radius: 15px; box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2); margin: 50px auto; width: 400px;">
+        <button id="fechar-cadastro" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5em; color: white; cursor: pointer;">&times;</button>
+        <h2>Cadastro de Usuário</h2>
+        <form id="cadastro-form">
+            <input type="text" id="nome" placeholder="Digite seu nome" required>
+            <input type="email" id="email-cadastro" placeholder="Digite seu e-mail" required>
+            <input type="password" id="senha-cadastro" placeholder="Digite sua senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+    <!-- 🔹 Botão de Cadastro Fixo e ícone clicável -->
+    <div id="cadastro-botao" onclick="document.getElementById('cadastro-container').style.display='block'; document.getElementById('login-form').style.display='none';">
+        <img src="capoeira-icon.png" alt="Capoeira" class="cadastro-icon">
+        <a href="#">Cadastre-se aqui</a>
+    </div>
+
+    <!-- 🔹 Rodapé -->
+    <footer>
+        <p>&copy; 2025 Nago Capoeira Campina Grande - Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- 🔹 Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import bcrypt from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/+esm";
+        import { firebaseConfig } from "./config.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('fechar-cadastro').addEventListener('click', function() {
+            document.getElementById('cadastro-container').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        });
+
+        // Função de cadastro com privilégios padrão e informações adicionais
+        async function cadastrarUsuario(nome, email, senha) {
+            try {
+                const senhaCriptografada = await bcrypt.hash(senha, 10);
+                await addDoc(collection(db, "usuarios"), {
+                    nome: nome,
+                    email: email,
+                    senha_hash: senhaCriptografada,
+                    status: "pendente",
+                    grupo_origem: "externo",
+                    nivel: "Aluno",
+                    privilegios: {
+                        acessoFinanceiro: false,
+                        acessoGestao: true,
+                        aprovarMensalidade: false,
+                        cadastrarDespesas: false,
+                        cadastrarEventos: false,
+                        relatorioAlunos: false,
+                        rankingTreinos: 0
+                    },
+                    total_pago: 0
+                });
+
+                alert("Cadastro realizado com sucesso! Aguarde aprovação.");
+                document.getElementById('cadastro-container').style.display = 'none';
+                document.getElementById('login-form').style.display = 'block';
+
+            } catch (error) {
+                alert("Erro ao cadastrar usuário: " + error.message);
+            }
+        }
+
+        document.getElementById("cadastro-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email-cadastro").value;
+            const senha = document.getElementById("senha-cadastro").value;
+            cadastrarUsuario(nome, email, senha);
+        });
+    </script>
+    <script type="module" src="login.js"></script>
+
+</body>
+</html>
