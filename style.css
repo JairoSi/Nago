@@ -171,7 +171,6 @@ footer {
     color: black;
 }
 
-
 #calendar-header {
     display: flex;
     justify-content: center;
@@ -227,7 +226,6 @@ footer {
     color: black;
 }
 
-
 /* 🔹 Ajuste do espaçamento do login */
 .login-container {
     position: relative;
@@ -252,3 +250,60 @@ nav {
 footer {
     margin-top: 100px; /* Garante espaço extra acima do rodapé */
 }
+
+/* ===== INÍCIO DAS ALTERAÇÕES DE RESPONSIVIDADE ===== */
+#tabela-container {
+    overflow-x: auto; /* Adicionado para rolagem horizontal no celular */
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    min-width: 600px; /* Garante largura mínima para evitar quebra de colunas */
+}
+
+form {
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+}
+
+button {
+    font-size: 1em;
+    padding: 12px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1, h2 {
+        font-size: 1.4em;
+    }
+
+    button {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+
+    form {
+        width: 95%;
+        padding: 15px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #cadastro-botao {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px;
+    }
+}
+/* ===== FIM DAS ALTERAÇÕES DE RESPONSIVIDADE ===== */
