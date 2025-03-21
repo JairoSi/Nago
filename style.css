@@ -251,15 +251,15 @@ footer {
     margin-top: 100px; /* Garante espaço extra acima do rodapé */
 }
 
-/* ===== INÍCIO DAS ALTERAÇÕES DE RESPONSIVIDADE ===== */
+/* ===== INÍCIO DAS ALTERAÇÕES DE RESPONSIVIDADE OTIMIZADA ===== */
 #tabela-container {
-    overflow-x: auto; /* Adicionado para rolagem horizontal no celular */
+    overflow-x: auto; /* Rolagem horizontal no celular */
     width: 100%;
 }
 
 table {
     width: 100%;
-    min-width: 600px; /* Garante largura mínima para evitar quebra de colunas */
+    min-width: 300px; /* Reduzido para melhor adaptação em telas menores */
 }
 
 form {
@@ -270,7 +270,7 @@ form {
 }
 
 button {
-    font-size: 1em;
+    font-size: clamp(0.8em, 2.5vw, 1em); /* Se adapta dinamicamente */
     padding: 12px;
     width: 100%;
     margin-top: 10px;
@@ -278,15 +278,14 @@ button {
 
 @media (max-width: 600px) {
     body {
-        font-size: 14px;
+        font-size: clamp(12px, 4vw, 14px);
     }
 
     h1, h2 {
-        font-size: 1.4em;
+        font-size: clamp(1.2em, 5vw, 1.4em);
     }
 
     button {
-        font-size: 0.9em;
         padding: 10px;
     }
 
@@ -305,5 +304,14 @@ button {
         right: 15px;
         padding: 10px;
     }
+
+    section {
+        padding: 15px;
+        margin: 80px auto 15px auto;
+    }
+
+    #tabela-pagamentos {
+        font-size: 0.85em;
+    }
 }
-/* ===== FIM DAS ALTERAÇÕES DE RESPONSIVIDADE ===== */
+/* ===== FIM DAS ALTERAÇÕES DE RESPONSIVIDADE OTIMIZADA ===== */
